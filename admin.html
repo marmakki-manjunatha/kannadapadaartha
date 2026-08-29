@@ -8,14 +8,34 @@
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
 .footer{background:black; color:#FFD700; padding:15px 0; text-align:center; font-weight:bold; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%;}
-.main{padding:30px 20px 100px 20px; max-width:650px; margin:auto;}
+.top-nav{
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px 0;
+  max-width: 650px;
+  margin: auto;
+}
+.home-btn{
+  background:#FFD700;
+  color:#000;
+  text-decoration:none;
+  padding:6px 14px;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:14px;
+  border:1px solid #b8860b;
+  cursor:pointer;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+.home-btn:hover{background:#e6c200;}
+.main{padding:20px 20px 100px 20px; max-width:650px; margin:auto;}
 .card{border:2px solid #FFD700; padding:25px; background:white; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
 h2{margin-top:0; color:#b8860b; text-align:center;}
 label{display:block; margin:15px 0 5px; font-weight:bold; color:#333;}
 input[type="text"], input[type="password"], textarea{width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:inherit; font-size:16px; box-sizing:border-box;}
 input:focus, textarea:focus{border-color:#b8860b; outline:none;}
-button{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
-button:hover{background:#996f08;}
+button.submit-btn{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
+button.submit-btn:hover{background:#996f08;}
 .error{color:red; text-align:center; margin-top:10px;}
 .status{text-align:center; margin-top:15px; font-weight:bold;}
 </style>
@@ -24,13 +44,18 @@ button:hover{background:#996f08;}
 
 <div class="header">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
+<!-- Home Navigation Button -->
+<div class="top-nav">
+  <button onclick="goToHome()" class="home-btn">ಮುಖಪುಟ (Home)</button>
+</div>
+
 <div class="main">
   <!-- Auth Section -->
   <div id="auth-section" class="card">
     <h2>ಲಾಗಿನ್</h2>
     <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್:</label>
     <input type="password" id="admin-pass">
-    <button onclick="checkPassword()">ಲಾಗಿನ್</button>
+    <button class="submit-btn" onclick="checkPassword()">ಲಾಗಿನ್</button>
     <div id="auth-msg" class="error"></div>
   </div>
 
@@ -56,7 +81,7 @@ button:hover{background:#996f08;}
     <label>ಮುಖ್ಯ ವಿವರಣೆ:</label>
     <textarea id="longText" rows="8"></textarea>
 
-    <button onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
+    <button class="submit-btn" onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
     <div id="status-msg" class="status"></div>
   </div>
 </div>
@@ -64,9 +89,13 @@ button:hover{background:#996f08;}
 <div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <script>
-// SHA-256 hash of "manjunaTHAgitHUB" (No plain text password stored in code)
 const PASSWORD_HASH = "c9bf78018e8156aa41738fb6c0850756708dd3ef78ff3bf26bbd9f2e7d704ecb";
 let attemptsLeft = 3;
+
+function goToHome() {
+  // Timestamp query param forces the browser to bypass cached index.html
+  window.location.href = 'index.html?t=' + Date.now();
+}
 
 async function sha256(message) {
   const msgBuffer = new TextEncoder().encode(message);
