@@ -197,6 +197,12 @@ async function decryptAndLogin() {
 }
 
 async function submitNewPage() {
+  if (!decryptedToken) {
+    alert("ದಯವಿಟ್ಟು ಮೊದಲು ಲಾಗಿನ್ ಆಗಿ (Session expired, please log in again).");
+    location.reload();
+    return;
+  }
+
   const title = document.getElementById('page-title').value.trim();
   const slug = document.getElementById('page-slug').value.trim();
   const short1 = document.getElementById('short1').value.trim();
@@ -216,18 +222,20 @@ async function submitNewPage() {
   const owner = "marmakki-manjunatha";
   const repo = "kannadapadaartha";
   const path = "data.json";
-  // Added cache-busting parameter here
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
 
   try {
-    // 1. Fetch the latest data.json and newest SHA
     const getRes = await fetch(apiUrl, {
       headers: {
         'Authorization': `Bearer ${decryptedToken}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Cache-Control': 'no-cache, no-store, must-revalidate'
+        'Accept': 'application/vnd.github.v3+json'
       }
     });
+
+    if (!getRes.ok && getRes.status !== 404) {
+      const errData = await getRes.json();
+      throw new Error(errData.message || "Failed to fetch file info");
+    }
 
     let currentData = [];
     let sha = null;
@@ -241,7 +249,6 @@ async function submitNewPage() {
       currentData = JSON.parse(decodedText);
     }
 
-    // 2. Append new entry
     const newPage = {
       id: currentData.length + 1,
       slug: slug || `page-${currentData.length + 1}`,
@@ -252,14 +259,12 @@ async function submitNewPage() {
     };
     currentData.push(newPage);
 
-    // 3. UTF-8 Encode
     const jsonString = JSON.stringify(currentData, null, 2);
     const utf8Bytes = new TextEncoder().encode(jsonString);
     let binary = '';
     utf8Bytes.forEach(b => binary += String.fromCharCode(b));
     const base64Content = btoa(binary);
 
-    // 4. Commit back to GitHub
     const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
       method: 'PUT',
       headers: {
