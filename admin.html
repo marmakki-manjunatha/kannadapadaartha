@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ಕನ್ನಡ_ಪದಾರ್ಥ - Admin Portal</title>
+<title>ಕನ್ನಡ_ಪದಾರ್ಥ</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
@@ -22,14 +22,14 @@ button:hover{background:#996f08;}
 </head>
 <body>
 
-<div class="header">ಕನ್ನಡ_ಪದಾರ್ಥ - Admin Portal</div>
+<div class="header">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <div class="main">
   <!-- Auth Section -->
   <div id="auth-section" class="card">
     <h2>ಲಾಗಿನ್</h2>
-    <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ:</label>
-    <input type="password" id="admin-pass" placeholder="ಪಾಸ್‌ವರ್ಡ್">
+    <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್:</label>
+    <input type="password" id="admin-pass">
     <button onclick="checkPassword()">ಲಾಗಿನ್</button>
     <div id="auth-msg" class="error"></div>
   </div>
@@ -38,30 +38,30 @@ button:hover{background:#996f08;}
   <div id="form-section" class="card" style="display:none;">
     <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
 
-    <label>ಗಿಟ್‌ಹಬ್ ಟೋಕನ್ (GitHub Token):</label>
-    <input type="password" id="gh-token-input" placeholder="ghp_...">
+    <label>ಟೋಕನ್:</label>
+    <input type="password" id="gh-token-input">
 
-    <label>ಪುಟದ ಶೀರ್ಷಿಕೆ / ಪದ:</label>
-    <input type="text" id="page-title" placeholder="ಉದಾ: Fish_Finish">
+    <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
+    <input type="text" id="page-title">
 
-    <label>ಸ್ಲಗ್ (Slug):</label>
-    <input type="text" id="page-slug" placeholder="ಉದಾ: fish-finish">
+    <label>ಸ್ಲಗ್:</label>
+    <input type="text" id="page-slug">
 
     <label>ವಿವರಣೆ ೧:</label>
-    <textarea id="short1" rows="3" placeholder="ಮೊದಲ ವಿವರಣೆ..."></textarea>
+    <textarea id="short1" rows="3"></textarea>
 
     <label>ವಿವರಣೆ ೨:</label>
-    <textarea id="short2" rows="3" placeholder="ಎರಡನೇ ವಿವರಣೆ..."></textarea>
+    <textarea id="short2" rows="3"></textarea>
 
     <label>ಮುಖ್ಯ ವಿವರಣೆ:</label>
-    <textarea id="longText" rows="8" placeholder="ದೀರ್ಘ ವಿವರಣೆ..."></textarea>
+    <textarea id="longText" rows="8"></textarea>
 
     <button onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
     <div id="status-msg" class="status"></div>
   </div>
 </div>
 
-<div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ • ನಿರ್ವಾಹಕ ಪುಟ</div>
+<div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <script>
 const CORRECT_PASS = "manjunaTHAgitHUB";
@@ -101,7 +101,7 @@ async function submitNewPage() {
 
   if (!token) {
     status.style.color = "red";
-    status.textContent = "ದಯವಿಟ್ಟು GitHub Token ನಮೂದಿಸಿ.";
+    status.textContent = "ದಯವಿಟ್ಟು ಟೋಕನ್ ನಮೂದಿಸಿ.";
     return;
   }
 
@@ -123,15 +123,15 @@ async function submitNewPage() {
   try {
     const getRes = await fetch(apiUrl, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
 
-    if (getRes.status === 401) {
+    if (getRes.status === 401 || getRes.status === 403) {
       localStorage.removeItem('gh_pat');
       status.style.color = "red";
-      status.textContent = "ದೋಷ: Token ಸರಿಯಾಗಿಲ್ಲ (Bad credentials). ಹೊಸ ಟೋಕನ್ ನಮೂದಿಸಿ.";
+      status.textContent = "ದೋಷ: ಟೋಕನ್ ಅನುಮತಿ ಸರಿಯಾಗಿಲ್ಲ. ಹೊಸ repo-permission ಟೋಕನ್ ನಮೂದಿಸಿ.";
       return;
     }
 
@@ -166,7 +166,7 @@ async function submitNewPage() {
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json'
       },
