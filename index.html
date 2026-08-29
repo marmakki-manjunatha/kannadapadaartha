@@ -40,10 +40,22 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 <div class="footer"><div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ_ಪದಾರ್ಥ ⇒</div></div>
 
 <script>
-// Fetch with aggressive cache-busting
-fetch('data.json?t=' + new Date().getTime(), { cache: 'no-store' })
+// Fetch directly via GitHub raw API to bypass CDN caching delays
+const apiUrl = 'https://api.github.com/repos/marmakki-manjunatha/kannadapadaartha/contents/data.json?t=' + Date.now();
+
+fetch(apiUrl, {
+  headers: {
+    'Accept': 'application/vnd.github.v3+json'
+  }
+})
   .then(res => res.json())
-  .then(pages => {
+  .then(fileInfo => {
+    // Decode Kannada UTF-8 properly from GitHub API Base64 content
+    const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
+    const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+    const decodedText = new TextDecoder('utf-8').decode(bytes);
+    const pages = JSON.parse(decodedText);
+
     if (!Array.isArray(pages) || pages.length === 0) {
       document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಯಾವುದೇ ಪುಟಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>';
       return;
@@ -68,7 +80,7 @@ fetch('data.json?t=' + new Date().getTime(), { cache: 'no-store' })
     }
 
     const pagination = document.getElementById('pagination');
-    pagination.innerHTML = ''; // clear existing
+    pagination.innerHTML = '';
     pages.forEach((_, idx) => {
       const pageNum = idx + 1;
       const a = document.createElement('a');
@@ -79,7 +91,13 @@ fetch('data.json?t=' + new Date().getTime(), { cache: 'no-store' })
     });
   })
   .catch(err => {
-    document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</p>';
+    // Fallback if API rate limit hits
+    fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => r.json())
+      .then(pages => location.reload())
+      .catch(() => {
+        document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</p>';
+      });
   });
 </script>
 
