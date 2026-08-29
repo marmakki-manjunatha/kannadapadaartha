@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Portal - ಕನ್ನಡ_ಪದಾರ್ಥ</title>
+<title>ಕನ್ನಡ_ಪದಾರ್ಥ - Admin Portal</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
@@ -27,38 +27,36 @@ button:hover{background:#996f08;}
 <div class="main">
   <!-- Auth Section -->
   <div id="auth-section" class="card">
-    <h2>ಲಾಗಿನ್ (Login)</h2>
+    <h2>ಲಾಗಿನ್</h2>
     <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ:</label>
-    <input type="password" id="admin-pass" placeholder="Password">
+    <input type="password" id="admin-pass" placeholder="ಪಾಸ್‌ವರ್ಡ್">
     <button onclick="checkPassword()">ಲಾಗಿನ್</button>
     <div id="auth-msg" class="error"></div>
   </div>
 
   <!-- Form Section -->
   <div id="form-section" class="card" style="display:none;">
-    <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ (Add New Page)</h2>
+    <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
 
-    <div id="token-field-wrapper" style="display:none;">
-      <label>GitHub Token (Only required once on first use):</label>
-      <input type="password" id="gh-token-input" placeholder="ghp_...">
-    </div>
+    <label>ಗಿಟ್‌ಹಬ್ ಟೋಕನ್ (GitHub Token):</label>
+    <input type="password" id="gh-token-input" placeholder="ghp_...">
 
-    <label>ಪುಟದ ಶೀರ್ಷಿಕೆ / ಪದ (Title / Word):</label>
+    <label>ಪುಟದ ಶೀರ್ಷಿಕೆ / ಪದ:</label>
     <input type="text" id="page-title" placeholder="ಉದಾ: Fish_Finish">
 
     <label>ಸ್ಲಗ್ (Slug):</label>
     <input type="text" id="page-slug" placeholder="ಉದಾ: fish-finish">
 
-    <label>ವಿವರಣೆ ೧ (Short Text 1 - ~500 chars):</label>
+    <label>ವಿವರಣೆ ೧:</label>
     <textarea id="short1" rows="3" placeholder="ಮೊದಲ ವಿವರಣೆ..."></textarea>
 
-    <label>ವಿವರಣೆ ೨ (Short Text 2 - ~500 chars):</label>
+    <label>ವಿವರಣೆ ೨:</label>
     <textarea id="short2" rows="3" placeholder="ಎರಡನೇ ವಿವರಣೆ..."></textarea>
 
-    <label>ಮುಖ್ಯ ವಿವರಣೆ (Main Text Content - 2000+ chars):</label>
+    <label>ಮುಖ್ಯ ವಿವರಣೆ:</label>
     <textarea id="longText" rows="8" placeholder="ದೀರ್ಘ ವಿವರಣೆ..."></textarea>
 
-    <button onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ (Publish Page)</button>
+    <button onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
     <div id="status-msg" class="status"></div>
   </div>
 </div>
@@ -77,9 +75,9 @@ function checkPassword() {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('form-section').style.display = 'block';
 
-    // Show token field only if token isn't already saved in browser
-    if (!localStorage.getItem('gh_pat')) {
-      document.getElementById('token-field-wrapper').style.display = 'block';
+    const savedToken = localStorage.getItem('gh_pat');
+    if (savedToken) {
+      document.getElementById('gh-token-input').value = savedToken;
     }
   } else {
     attemptsLeft--;
@@ -92,14 +90,8 @@ function checkPassword() {
 }
 
 async function submitNewPage() {
-  let token = localStorage.getItem('gh_pat');
   const tokenInput = document.getElementById('gh-token-input');
-  
-  if (!token && tokenInput && tokenInput.value.trim()) {
-    token = tokenInput.value.trim();
-    localStorage.setItem('gh_pat', token);
-  }
-
+  const token = tokenInput.value.trim();
   const title = document.getElementById('page-title').value.trim();
   const slug = document.getElementById('page-slug').value.trim();
   const short1 = document.getElementById('short1').value.trim();
@@ -115,12 +107,13 @@ async function submitNewPage() {
 
   if (!title) {
     status.style.color = "red";
-    status.textContent = "ದಯವಿಟ್ಟು Title ನಮೂದಿಸಿ.";
+    status.textContent = "ದಯವಿಟ್ಟು ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ.";
     return;
   }
 
+  localStorage.setItem('gh_pat', token);
   status.style.color = "#b8860b";
-  status.textContent = "ಉಳಿಸಲಾಗುತ್ತಿದೆ (Saving)...";
+  status.textContent = "ಉಳಿಸಲಾಗುತ್ತಿದೆ...";
 
   const owner = "marmakki-manjunatha";
   const repo = "kannadapadaartha";
@@ -130,10 +123,17 @@ async function submitNewPage() {
   try {
     const getRes = await fetch(apiUrl, {
       headers: {
-        'Authorization': `token ${token}`,
+        'Authorization': `Bearer ${token}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
+
+    if (getRes.status === 401) {
+      localStorage.removeItem('gh_pat');
+      status.style.color = "red";
+      status.textContent = "ದೋಷ: Token ಸರಿಯಾಗಿಲ್ಲ (Bad credentials). ಹೊಸ ಟೋಕನ್ ನಮೂದಿಸಿ.";
+      return;
+    }
 
     let currentData = [];
     let sha = null;
@@ -166,7 +166,7 @@ async function submitNewPage() {
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${token}`,
+        'Authorization': `Bearer ${token}`,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json'
       },
@@ -179,19 +179,16 @@ async function submitNewPage() {
 
     if (putRes.ok) {
       status.style.color = "green";
-      status.textContent = `ಪುಟ #${newPage.id} ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ!`;
+      status.textContent = `ಪುಟ #${newPage.id} ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕಟಿಸಲಾಗಿದೆ!`;
       document.getElementById('page-title').value = '';
       document.getElementById('page-slug').value = '';
       document.getElementById('short1').value = '';
       document.getElementById('short2').value = '';
       document.getElementById('longText').value = '';
-      if (document.getElementById('token-field-wrapper')) {
-        document.getElementById('token-field-wrapper').style.display = 'none';
-      }
     } else {
       const errData = await putRes.json();
       status.style.color = "red";
-      status.textContent = `Error: ${errData.message}`;
+      status.textContent = `ದೋಷ: ${errData.message}`;
     }
   } catch (err) {
     status.style.color = "red";
