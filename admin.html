@@ -34,6 +34,28 @@ h2{margin-top:0; color:#b8860b; text-align:center;}
 label{display:block; margin:15px 0 5px; font-weight:bold; color:#333;}
 input[type="text"], input[type="password"], textarea{width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:inherit; font-size:16px; box-sizing:border-box;}
 input:focus, textarea:focus{border-color:#b8860b; outline:none;}
+
+/* Password container & eye icon toggle */
+.password-wrapper{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-wrapper input {
+  padding-right: 42px;
+}
+.toggle-eye{
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  color: #777;
+}
+.toggle-eye:hover{
+  color: #000;
+}
+
 button.submit-btn{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
 button.submit-btn:hover{background:#996f08;}
 .error{color:red; text-align:center; margin-top:10px;}
@@ -54,7 +76,10 @@ button.submit-btn:hover{background:#996f08;}
   <div id="auth-section" class="card">
     <h2>ಲಾಗಿನ್</h2>
     <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್:</label>
-    <input type="password" id="admin-pass">
+    <div class="password-wrapper">
+      <input type="password" id="admin-pass">
+      <span class="toggle-eye" onclick="toggleVisibility('admin-pass', this)" title="Show/Hide">👁️</span>
+    </div>
     <button class="submit-btn" onclick="checkPassword()">ಲಾಗಿನ್</button>
     <div id="auth-msg" class="error"></div>
   </div>
@@ -64,7 +89,10 @@ button.submit-btn:hover{background:#996f08;}
     <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
 
     <label>ಟೋಕನ್:</label>
-    <input type="password" id="gh-token-input">
+    <div class="password-wrapper">
+      <input type="password" id="gh-token-input">
+      <span class="toggle-eye" onclick="toggleVisibility('gh-token-input', this)" title="Show/Hide">👁️</span>
+    </div>
 
     <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
     <input type="text" id="page-title">
@@ -93,8 +121,18 @@ const PASSWORD_HASH = "c9bf78018e8156aa41738fb6c0850756708dd3ef78ff3bf26bbd9f2e7
 let attemptsLeft = 3;
 
 function goToHome() {
-  // Timestamp query param forces the browser to bypass cached index.html
   window.location.href = 'index.html?t=' + Date.now();
+}
+
+function toggleVisibility(inputId, iconElement) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    iconElement.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    iconElement.textContent = '👁️';
+  }
 }
 
 async function sha256(message) {
