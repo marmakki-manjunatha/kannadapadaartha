@@ -19,7 +19,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
 .pagination{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:30px; padding:15px 0;}
-.page-btn{padding:8px 14px; text-decoration:none; background:white; color:#b8860b; border:2px solid #FFD700; border-radius:6px; font-weight:bold;}
+.page-btn{padding:8px 14px; text-decoration:none; background:white; color:#b8860b; border:2px solid #FFD700; border-radius:6px; font-weight:bold; cursor:pointer;}
 .page-btn.active{background:#FFD700; color:black;}
 </style>
 </head>
@@ -40,9 +40,15 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 <div class="footer"><div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ_ಪದಾರ್ಥ ⇒</div></div>
 
 <script>
-fetch('data.json?v=' + Date.now())
+// Fetch with aggressive cache-busting
+fetch('data.json?t=' + new Date().getTime(), { cache: 'no-store' })
   .then(res => res.json())
   .then(pages => {
+    if (!Array.isArray(pages) || pages.length === 0) {
+      document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಯಾವುದೇ ಪುಟಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>';
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
     let currentPage = parseInt(params.get('page')) || 1;
     if (currentPage < 1 || currentPage > pages.length) currentPage = 1;
@@ -62,6 +68,7 @@ fetch('data.json?v=' + Date.now())
     }
 
     const pagination = document.getElementById('pagination');
+    pagination.innerHTML = ''; // clear existing
     pages.forEach((_, idx) => {
       const pageNum = idx + 1;
       const a = document.createElement('a');
