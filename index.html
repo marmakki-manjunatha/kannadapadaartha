@@ -6,6 +6,7 @@
 <title>ಕನ್ನಡ_ಪದಾರ್ಥ - ಮಾರ್ಮಕ್ಕಿ ಮಞಾತ</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
+.header-wrapper{position:relative;}
 .header{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-bottom:3px solid #FFD700;}
 .footer{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%; z-index:10;}
 .scroll{animation: scroll 20s linear infinite; display:inline-block; padding-left:100%; font-size:20px; font-weight:bold;}
@@ -13,7 +14,24 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 @keyframes scroll2{0%{transform:translateX(-100%)}100%{transform:translateX(0)}}
 
-/* Extra bottom padding to prevent content overlap with bottom navigation */
+/* Top Right Admin Button */
+.admin-btn{
+  position:absolute;
+  top:10px;
+  right:15px;
+  background:#FFD700;
+  color:#000;
+  text-decoration:none;
+  padding:6px 14px;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:14px;
+  z-index:20;
+  border:1px solid #b8860b;
+  box-shadow:0 2px 5px rgba(0,0,0,0.3);
+}
+.admin-btn:hover{background:#e6c200;}
+
 .main{padding:30px 20px 140px 20px; max-width:800px; margin:auto;}
 h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .subtitle{text-align:center; color:#555; margin-bottom:30px;}
@@ -21,7 +39,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
 
-/* Fixed directly above the footer */
+/* Pinned directly above the footer */
 .pagination-container{position:fixed; bottom:55px; left:0; width:100%; background:rgba(255, 250, 240, 0.95); padding:8px 0; z-index:9; border-top:1px solid #e0d0b0;}
 .pagination{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; max-width:800px; margin:auto; padding:0 10px;}
 .page-btn{padding:6px 12px; text-decoration:none; background:white; color:#b8860b; border:2px solid #FFD700; border-radius:6px; font-weight:bold; cursor:pointer; font-size:14px;}
@@ -30,7 +48,10 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 </head>
 <body>
 
-<div class="header"><div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ_ಪದಾರ್ಥ ↔</div></div>
+<div class="header-wrapper">
+  <div class="header"><div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ_ಪದಾರ್ಥ ↔</div></div>
+  <a href="admin.html" class="admin-btn">ನಿರ್ವಾಹಕ (Admin)</a>
+</div>
 
 <div class="main">
   <h1>ಕನ್ನಡ_ಪದಾರ್ಥ</h1>
