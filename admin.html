@@ -216,13 +216,16 @@ async function submitNewPage() {
   const owner = "marmakki-manjunatha";
   const repo = "kannadapadaartha";
   const path = "data.json";
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  // Added cache-busting parameter here
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
 
   try {
+    // 1. Fetch the latest data.json and newest SHA
     const getRes = await fetch(apiUrl, {
       headers: {
         'Authorization': `Bearer ${decryptedToken}`,
-        'Accept': 'application/vnd.github.v3+json'
+        'Accept': 'application/vnd.github.v3+json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
       }
     });
 
@@ -238,6 +241,7 @@ async function submitNewPage() {
       currentData = JSON.parse(decodedText);
     }
 
+    // 2. Append new entry
     const newPage = {
       id: currentData.length + 1,
       slug: slug || `page-${currentData.length + 1}`,
@@ -248,13 +252,15 @@ async function submitNewPage() {
     };
     currentData.push(newPage);
 
+    // 3. UTF-8 Encode
     const jsonString = JSON.stringify(currentData, null, 2);
     const utf8Bytes = new TextEncoder().encode(jsonString);
     let binary = '';
     utf8Bytes.forEach(b => binary += String.fromCharCode(b));
     const base64Content = btoa(binary);
 
-    const putRes = await fetch(apiUrl, {
+    // 4. Commit back to GitHub
+    const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${decryptedToken}`,
