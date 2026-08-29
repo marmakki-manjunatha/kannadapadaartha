@@ -3,30 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ಕನ್ನಡ_ಪದಾರ್ಥ</title>
+<title>ಕನ್ನಡ_ಪದಾರ್ಥ - Admin</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
 .footer{background:black; color:#FFD700; padding:15px 0; text-align:center; font-weight:bold; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%;}
-.top-nav{
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px 20px 0;
-  max-width: 650px;
-  margin: auto;
-}
-.home-btn{
-  background:#FFD700;
-  color:#000;
-  text-decoration:none;
-  padding:6px 14px;
-  border-radius:6px;
-  font-weight:bold;
-  font-size:14px;
-  border:1px solid #b8860b;
-  cursor:pointer;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
+.top-nav{display:flex; justify-content:flex-end; padding:10px 20px 0; max-width:650px; margin:auto;}
+.home-btn{background:#FFD700; color:#000; text-decoration:none; padding:6px 14px; border-radius:6px; font-weight:bold; font-size:14px; border:1px solid #b8860b; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
 .home-btn:hover{background:#e6c200;}
 .main{padding:20px 20px 100px 20px; max-width:650px; margin:auto;}
 .card{border:2px solid #FFD700; padding:25px; background:white; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
@@ -34,28 +17,9 @@ h2{margin-top:0; color:#b8860b; text-align:center;}
 label{display:block; margin:15px 0 5px; font-weight:bold; color:#333;}
 input[type="text"], input[type="password"], textarea{width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:inherit; font-size:16px; box-sizing:border-box;}
 input:focus, textarea:focus{border-color:#b8860b; outline:none;}
-
-/* Password container & eye icon toggle */
-.password-wrapper{
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.password-wrapper input {
-  padding-right: 42px;
-}
-.toggle-eye{
-  position: absolute;
-  right: 12px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 18px;
-  color: #777;
-}
-.toggle-eye:hover{
-  color: #000;
-}
-
+.password-wrapper{position:relative; display:flex; align-items:center;}
+.password-wrapper input{padding-right:42px;}
+.toggle-eye{position:absolute; right:12px; cursor:pointer; user-select:none; font-size:18px; color:#777;}
 button.submit-btn{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
 button.submit-btn:hover{background:#996f08;}
 .error{color:red; text-align:center; margin-top:10px;}
@@ -66,7 +30,6 @@ button.submit-btn:hover{background:#996f08;}
 
 <div class="header">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
-<!-- Home Navigation Button -->
 <div class="top-nav">
   <button onclick="goToHome()" class="home-btn">ಮುಖಪುಟ (Home)</button>
 </div>
@@ -78,21 +41,15 @@ button.submit-btn:hover{background:#996f08;}
     <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್:</label>
     <div class="password-wrapper">
       <input type="password" id="admin-pass">
-      <span class="toggle-eye" onclick="toggleVisibility('admin-pass', this)" title="Show/Hide">👁️</span>
+      <span class="toggle-eye" onclick="toggleVisibility('admin-pass', this)">👁️</span>
     </div>
-    <button class="submit-btn" onclick="checkPassword()">ಲಾಗಿನ್</button>
+    <button class="submit-btn" onclick="decryptAndLogin()">ಲಾಗಿನ್</button>
     <div id="auth-msg" class="error"></div>
   </div>
 
   <!-- Form Section -->
   <div id="form-section" class="card" style="display:none;">
     <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
-
-    <label>ಟೋಕನ್:</label>
-    <div class="password-wrapper">
-      <input type="password" id="gh-token-input">
-      <span class="toggle-eye" onclick="toggleVisibility('gh-token-input', this)" title="Show/Hide">👁️</span>
-    </div>
 
     <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
     <input type="text" id="page-title">
@@ -112,12 +69,24 @@ button.submit-btn:hover{background:#996f08;}
     <button class="submit-btn" onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
     <div id="status-msg" class="status"></div>
   </div>
+
+  <!-- Encryptor Tool (Setup helper if ciphertext is not yet set) -->
+  <div id="setup-section" class="card" style="display:none; margin-top:20px; border-color:#999;">
+    <h3>Initial One-Time Setup</h3>
+    <label>Enter your GitHub Token:</label>
+    <input type="password" id="setup-token" placeholder="ghp_...">
+    <button class="submit-btn" style="background:#444;" onclick="generateEncryptedPayload()">Generate Encrypted Cipher</button>
+    <div id="setup-output" style="margin-top:10px; word-break:break-all; font-family:monospace; font-size:12px;"></div>
+  </div>
 </div>
 
 <div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <script>
-const PASSWORD_HASH = "7bb5d1dbbe32a0c482ce38515c0a373b50cfa31ca3775f0a67137f76906fc4a1";
+// --- PASTE YOUR ENCRYPTED PAYLOAD HERE ---
+const ENCRYPTED_PAYLOAD = ""; // Paste the output from setup tool here
+
+let decryptedToken = null;
 let attemptsLeft = 3;
 
 function goToHome() {
@@ -135,27 +104,89 @@ function toggleVisibility(inputId, iconElement) {
   }
 }
 
-async function sha256(message) {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+// AES-GCM Key Derivation via PBKDF2
+async function getKey(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: salt,
+      iterations: 100000,
+      hash: "SHA-256"
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
 }
 
-async function checkPassword() {
-  const entered = document.getElementById('admin-pass').value.trim();
-  const msg = document.getElementById('auth-msg');
-  const enteredHash = await sha256(entered);
+// Setup Helper: Run once in browser if ENCRYPTED_PAYLOAD is blank
+window.onload = function() {
+  if (!ENCRYPTED_PAYLOAD) {
+    document.getElementById('setup-section').style.display = 'block';
+  }
+};
 
-  if (enteredHash === PASSWORD_HASH) {
+async function generateEncryptedPayload() {
+  const token = document.getElementById('setup-token').value.trim();
+  const pass = "manjunaTHAgitHUB";
+  if (!token) return alert("Enter token");
+
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await getKey(pass, salt);
+
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: iv },
+    key,
+    new TextEncoder().encode(token)
+  );
+
+  const payload = {
+    salt: Array.from(salt),
+    iv: Array.from(iv),
+    data: Array.from(new Uint8Array(encrypted))
+  };
+
+  const outputStr = btoa(JSON.stringify(payload));
+  document.getElementById('setup-output').innerHTML = 
+    `<b>Success!</b> Copy this string and paste it into <code>const ENCRYPTED_PAYLOAD = "${outputStr}";</code> in admin.html:<br><br><textarea rows="3" readonly style="width:100%">${outputStr}</textarea>`;
+}
+
+async function decryptAndLogin() {
+  const enteredPass = document.getElementById('admin-pass').value.trim();
+  const msg = document.getElementById('auth-msg');
+
+  if (!ENCRYPTED_PAYLOAD) {
+    msg.textContent = "Please generate ENCRYPTED_PAYLOAD first using the setup tool below.";
+    return;
+  }
+
+  try {
+    const payload = JSON.parse(atob(ENCRYPTED_PAYLOAD));
+    const salt = new Uint8Array(payload.salt);
+    const iv = new Uint8Array(payload.iv);
+    const data = new Uint8Array(payload.data);
+
+    const key = await getKey(enteredPass, salt);
+    const decrypted = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      data
+    );
+
+    decryptedToken = new TextDecoder().decode(decrypted);
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('form-section').style.display = 'block';
-
-    const savedToken = localStorage.getItem('gh_pat');
-    if (savedToken) {
-      document.getElementById('gh-token-input').value = savedToken;
-    }
-  } else {
+  } catch (err) {
     attemptsLeft--;
     if (attemptsLeft > 0) {
       msg.textContent = `ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್. ನಿಮಗೆ ಇನ್ನೂ ${attemptsLeft} ಅವಕಾಶಗಳಿವೆ.`;
@@ -166,8 +197,6 @@ async function checkPassword() {
 }
 
 async function submitNewPage() {
-  const tokenInput = document.getElementById('gh-token-input');
-  const token = tokenInput.value.trim();
   const title = document.getElementById('page-title').value.trim();
   const slug = document.getElementById('page-slug').value.trim();
   const short1 = document.getElementById('short1').value.trim();
@@ -175,19 +204,12 @@ async function submitNewPage() {
   const longText = document.getElementById('longText').value.trim();
   const status = document.getElementById('status-msg');
 
-  if (!token) {
-    status.style.color = "red";
-    status.textContent = "ದಯವಿಟ್ಟು ಟೋಕನ್ ನಮೂದಿಸಿ.";
-    return;
-  }
-
   if (!title) {
     status.style.color = "red";
     status.textContent = "ದಯವಿಟ್ಟು ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ.";
     return;
   }
 
-  localStorage.setItem('gh_pat', token);
   status.style.color = "#b8860b";
   status.textContent = "ಉಳಿಸಲಾಗುತ್ತಿದೆ...";
 
@@ -199,17 +221,10 @@ async function submitNewPage() {
   try {
     const getRes = await fetch(apiUrl, {
       headers: {
-        'Authorization': `token ${token}`,
+        'Authorization': `Bearer ${decryptedToken}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
-
-    if (getRes.status === 401 || getRes.status === 403) {
-      localStorage.removeItem('gh_pat');
-      status.style.color = "red";
-      status.textContent = "ದೋಷ: ಟೋಕನ್ ಅನುಮತಿ ಸರಿಯಾಗಿಲ್ಲ. ಹೊಸ repo-permission ಟೋಕನ್ ನಮೂದಿಸಿ.";
-      return;
-    }
 
     let currentData = [];
     let sha = null;
@@ -242,7 +257,7 @@ async function submitNewPage() {
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${token}`,
+        'Authorization': `Bearer ${decryptedToken}`,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json'
       },
