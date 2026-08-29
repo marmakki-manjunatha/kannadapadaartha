@@ -38,6 +38,11 @@ button:hover{background:#996f08;}
   <div id="form-section" class="card" style="display:none;">
     <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ (Add New Page)</h2>
 
+    <div id="token-field-wrapper" style="display:none;">
+      <label>GitHub Token (Only required once on first use):</label>
+      <input type="password" id="gh-token-input" placeholder="ghp_...">
+    </div>
+
     <label>ಪುಟದ ಶೀರ್ಷಿಕೆ / ಪದ (Title / Word):</label>
     <input type="text" id="page-title" placeholder="ಉದಾ: Fish_Finish">
 
@@ -61,8 +66,6 @@ button:hover{background:#996f08;}
 <div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ • ನಿರ್ವಾಹಕ ಪುಟ</div>
 
 <script>
-// --- YOUR CONFIGURATION ---
-const GH_TOKEN = "ghp_YOUR_ACTUAL_TOKEN_HERE"; // <-- Paste your token here
 const CORRECT_PASS = "manjunaTHAgitHUB";
 let attemptsLeft = 3;
 
@@ -73,6 +76,11 @@ function checkPassword() {
   if (entered === CORRECT_PASS) {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('form-section').style.display = 'block';
+
+    // Show token field only if token isn't already saved in browser
+    if (!localStorage.getItem('gh_pat')) {
+      document.getElementById('token-field-wrapper').style.display = 'block';
+    }
   } else {
     attemptsLeft--;
     if (attemptsLeft > 0) {
@@ -84,12 +92,26 @@ function checkPassword() {
 }
 
 async function submitNewPage() {
+  let token = localStorage.getItem('gh_pat');
+  const tokenInput = document.getElementById('gh-token-input');
+  
+  if (!token && tokenInput && tokenInput.value.trim()) {
+    token = tokenInput.value.trim();
+    localStorage.setItem('gh_pat', token);
+  }
+
   const title = document.getElementById('page-title').value.trim();
   const slug = document.getElementById('page-slug').value.trim();
   const short1 = document.getElementById('short1').value.trim();
   const short2 = document.getElementById('short2').value.trim();
   const longText = document.getElementById('longText').value.trim();
   const status = document.getElementById('status-msg');
+
+  if (!token) {
+    status.style.color = "red";
+    status.textContent = "ದಯವಿಟ್ಟು GitHub Token ನಮೂದಿಸಿ.";
+    return;
+  }
 
   if (!title) {
     status.style.color = "red";
@@ -106,10 +128,9 @@ async function submitNewPage() {
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
   try {
-    // 1. Fetch current data.json
     const getRes = await fetch(apiUrl, {
       headers: {
-        'Authorization': `token ${GH_TOKEN}`,
+        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json'
       }
     });
@@ -126,7 +147,6 @@ async function submitNewPage() {
       currentData = JSON.parse(decodedText);
     }
 
-    // 2. Append new page entry
     const newPage = {
       id: currentData.length + 1,
       slug: slug || `page-${currentData.length + 1}`,
@@ -137,18 +157,16 @@ async function submitNewPage() {
     };
     currentData.push(newPage);
 
-    // 3. UTF-8 encode Kannada text
     const jsonString = JSON.stringify(currentData, null, 2);
     const utf8Bytes = new TextEncoder().encode(jsonString);
     let binary = '';
     utf8Bytes.forEach(b => binary += String.fromCharCode(b));
     const base64Content = btoa(binary);
 
-    // 4. Commit to GitHub
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `token ${GH_TOKEN}`,
+        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json'
       },
@@ -167,6 +185,9 @@ async function submitNewPage() {
       document.getElementById('short1').value = '';
       document.getElementById('short2').value = '';
       document.getElementById('longText').value = '';
+      if (document.getElementById('token-field-wrapper')) {
+        document.getElementById('token-field-wrapper').style.display = 'none';
+      }
     } else {
       const errData = await putRes.json();
       status.style.color = "red";
