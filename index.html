@@ -7,19 +7,24 @@
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-bottom:3px solid #FFD700;}
-.footer{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%;}
+.footer{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%; z-index:10;}
 .scroll{animation: scroll 20s linear infinite; display:inline-block; padding-left:100%; font-size:20px; font-weight:bold;}
 .scroll2{animation: scroll2 20s linear infinite; display:inline-block; padding-left:100%; font-size:20px; font-weight:bold;}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 @keyframes scroll2{0%{transform:translateX(-100%)}100%{transform:translateX(0)}}
+
+/* Extra bottom padding to prevent content overlap with bottom navigation */
 .main{padding:30px 20px 140px 20px; max-width:800px; margin:auto;}
 h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .subtitle{text-align:center; color:#555; margin-bottom:30px;}
 .word{border:2px solid #FFD700; padding:20px; background:white; margin:20px 0; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
-.pagination{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:30px; padding:15px 0;}
-.page-btn{padding:8px 14px; text-decoration:none; background:white; color:#b8860b; border:2px solid #FFD700; border-radius:6px; font-weight:bold; cursor:pointer;}
+
+/* Fixed directly above the footer */
+.pagination-container{position:fixed; bottom:55px; left:0; width:100%; background:rgba(255, 250, 240, 0.95); padding:8px 0; z-index:9; border-top:1px solid #e0d0b0;}
+.pagination{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; max-width:800px; margin:auto; padding:0 10px;}
+.page-btn{padding:6px 12px; text-decoration:none; background:white; color:#b8860b; border:2px solid #FFD700; border-radius:6px; font-weight:bold; cursor:pointer; font-size:14px;}
 .page-btn.active{background:#FFD700; color:black;}
 </style>
 </head>
@@ -32,25 +37,21 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   <p class="subtitle">ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ • ಭಾಷಾ ಸಂಶೋಧನೆ</p>
 
   <div id="content-area"></div>
+</div>
 
-  <!-- Page Navigation -->
+<!-- Page Navigation pinned right above footer -->
+<div class="pagination-container">
   <div class="pagination" id="pagination"></div>
 </div>
 
 <div class="footer"><div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ_ಪದಾರ್ಥ ⇒</div></div>
 
 <script>
-// Fetch directly via GitHub raw API to bypass CDN caching delays
 const apiUrl = 'https://api.github.com/repos/marmakki-manjunatha/kannadapadaartha/contents/data.json?t=' + Date.now();
 
-fetch(apiUrl, {
-  headers: {
-    'Accept': 'application/vnd.github.v3+json'
-  }
-})
+fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
   .then(res => res.json())
   .then(fileInfo => {
-    // Decode Kannada UTF-8 properly from GitHub API Base64 content
     const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
     const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
     const decodedText = new TextDecoder('utf-8').decode(bytes);
@@ -91,10 +92,9 @@ fetch(apiUrl, {
     });
   })
   .catch(err => {
-    // Fallback if API rate limit hits
     fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
       .then(r => r.json())
-      .then(pages => location.reload())
+      .then(() => location.reload())
       .catch(() => {
         document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</p>';
       });
