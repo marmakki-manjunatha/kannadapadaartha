@@ -64,14 +64,23 @@ button:hover{background:#996f08;}
 <div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <script>
-const CORRECT_PASS = "manjunaTHAgitHUB";
+// SHA-256 hash of "manjunaTHAgitHUB" (No plain text password stored in code)
+const PASSWORD_HASH = "c9bf78018e8156aa41738fb6c0850756708dd3ef78ff3bf26bbd9f2e7d704ecb";
 let attemptsLeft = 3;
 
-function checkPassword() {
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkPassword() {
   const entered = document.getElementById('admin-pass').value;
   const msg = document.getElementById('auth-msg');
+  const enteredHash = await sha256(entered);
 
-  if (entered === CORRECT_PASS) {
+  if (enteredHash === PASSWORD_HASH) {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('form-section').style.display = 'block';
 
