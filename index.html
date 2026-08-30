@@ -13,7 +13,6 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
 @keyframes scroll2{0%{transform:translateX(-100%)}100%{transform:translateX(0)}}
 
-/* Admin Bar placed right below the scrolling header */
 .top-nav{
   display: flex;
   justify-content: flex-end;
@@ -41,11 +40,59 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
 
-/* Pinned directly above the footer */
-.pagination-container{position:fixed; bottom:55px; left:0; width:100%; background:rgba(255, 250, 240, 0.95); padding:8px 0; z-index:9; border-top:1px solid #e0d0b0;}
-.pagination{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; max-width:800px; margin:auto; padding:0 10px;}
-.page-btn{padding:6px 12px; text-decoration:none; background:white; color:#b8860b; border:2px solid #FFD700; border-radius:6px; font-weight:bold; cursor:pointer; font-size:14px;}
-.page-btn.active{background:#FFD700; color:black;}
+/* Pinned Navigation Bar above footer */
+.pagination-container{
+  position:fixed; 
+  bottom:55px; 
+  left:0; 
+  width:100%; 
+  background:rgba(255, 250, 240, 0.98); 
+  padding:8px 0; 
+  z-index:9; 
+  border-top:1px solid #e0d0b0;
+}
+.pagination{
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  gap:8px; 
+  max-width:850px; 
+  margin:auto; 
+  padding:0 10px;
+  overflow-x:auto;
+}
+.page-btn{
+  padding:6px 14px; 
+  text-decoration:none; 
+  background:white; 
+  color:#b8860b; 
+  border:2px solid #FFD700; 
+  border-radius:6px; 
+  font-weight:bold; 
+  cursor:pointer; 
+  font-size:14px;
+  white-space:nowrap;
+}
+.page-btn.active{
+  background:#FFD700; 
+  color:black;
+}
+.arrow-btn{
+  padding:6px 12px;
+  text-decoration:none;
+  background:#b8860b;
+  color:white;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  border:none;
+}
+.arrow-btn.disabled{
+  background:#ccc;
+  cursor:not-allowed;
+  pointer-events:none;
+}
 </style>
 </head>
 <body>
@@ -54,7 +101,6 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   <div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ_ಪದಾರ್ಥ ↔</div>
 </div>
 
-<!-- Admin Button below the header -->
 <div class="top-nav">
   <a href="admin.html" class="admin-btn">ನಿರ್ವಾಹಕ (Admin)</a>
 </div>
@@ -66,7 +112,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   <div id="content-area"></div>
 </div>
 
-<!-- Page Navigation pinned right above footer -->
+<!-- Bottom Navigation Bar with Arrows & Page Titles -->
 <div class="pagination-container">
   <div class="pagination" id="pagination"></div>
 </div>
@@ -95,6 +141,7 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     let currentPage = parseInt(params.get('page')) || 1;
     if (currentPage < 1 || currentPage > pages.length) currentPage = 1;
 
+    // Display current page content
     const data = pages[currentPage - 1];
     const contentArea = document.getElementById('content-area');
     
@@ -109,16 +156,33 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
       `;
     }
 
+    // Build pagination controls
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
-    pages.forEach((_, idx) => {
+
+    // Previous Arrow Button (←)
+    const prevBtn = document.createElement('a');
+    prevBtn.innerHTML = '&larr; ಹಿಂದಿನದು';
+    prevBtn.className = `arrow-btn ${currentPage === 1 ? 'disabled' : ''}`;
+    prevBtn.href = `?page=${currentPage - 1}`;
+    pagination.appendChild(prevBtn);
+
+    // Title buttons for each page
+    pages.forEach((pageItem, idx) => {
       const pageNum = idx + 1;
       const a = document.createElement('a');
       a.href = `?page=${pageNum}`;
       a.className = `page-btn ${pageNum === currentPage ? 'active' : ''}`;
-      a.textContent = `Page ${pageNum}`;
+      a.textContent = pageItem.title || `Page ${pageNum}`;
       pagination.appendChild(a);
     });
+
+    // Next Arrow Button (→)
+    const nextBtn = document.createElement('a');
+    nextBtn.innerHTML = 'ಮುಂದಿನದು &rarr;';
+    nextBtn.className = `arrow-btn ${currentPage === pages.length ? 'disabled' : ''}`;
+    nextBtn.href = `?page=${currentPage + 1}`;
+    pagination.appendChild(nextBtn);
   })
   .catch(err => {
     fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
