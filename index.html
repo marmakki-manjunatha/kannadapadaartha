@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ಕನ್ನಡ ಪದಾರ್ಥ - ಮಾರ್ಮಕ್ಕಿ ಮಞಾತ</title>
+<title>ಕನ್ನಡ_ಪದಾರ್ಥ - ಮಾರ್ಮಕ್ಕಿ ಮಞಾತ</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-bottom:3px solid #FFD700;}
@@ -33,7 +33,7 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
 }
 .admin-btn:hover{background:#e6c200;}
 
-.main{padding:10px 20px 160px 20px; max-width:800px; margin:auto;}
+.main{padding:10px 20px 140px 20px; max-width:800px; margin:auto;}
 h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .subtitle{text-align:center; color:#555; margin-bottom:30px;}
 .word{border:2px solid #FFD700; padding:20px; background:white; margin:20px 0; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
@@ -51,7 +51,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   padding-bottom: 5px;
 }
 
-/* Full-width pinned navigation bar */
+/* Fixed Bottom Navigation Container */
 .pagination-container{
   position:fixed; 
   bottom:55px; 
@@ -66,16 +66,16 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   display:flex; 
   align-items:center; 
   justify-content:center; 
-  flex-wrap:wrap; 
-  gap:8px; 
+  flex-wrap:nowrap; 
+  gap:6px; 
   width:100%; 
-  max-width:100%; 
+  max-width:850px; 
   margin:auto; 
-  padding:0 20px;
+  padding:0 10px;
   box-sizing:border-box;
 }
 .page-btn{
-  padding:6px 12px; 
+  padding:6px 10px; 
   text-decoration:none; 
   background:white; 
   color:#b8860b; 
@@ -85,13 +85,17 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   cursor:pointer; 
   font-size:14px;
   white-space:nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 .page-btn.active{
   background:#FFD700; 
   color:black;
 }
 .arrow-btn{
-  padding:6px 12px;
+  padding:6px 10px;
   text-decoration:none;
   background:#b8860b;
   color:white;
@@ -107,6 +111,13 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   cursor:not-allowed;
   pointer-events:none;
 }
+
+@media(max-width: 600px){
+  h1{font-size:32px;}
+  .word h2{font-size:26px;}
+  .page-btn{font-size:13px; max-width:110px; padding:6px 8px;}
+  .arrow-btn{font-size:13px; padding:6px 8px;}
+}
 </style>
 </head>
 <body>
@@ -120,13 +131,13 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 </div>
 
 <div class="main">
-  <h1>ಕನ್ನಡ ಪದಾರ್ಥ</h1>
+  <h1>ಕನ್ನಡ_ಪದಾರ್ಥ</h1>
   <p class="subtitle">ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ • ಭಾಷಾ ಸಂಶೋಧನೆ</p>
 
   <div id="content-area"></div>
 </div>
 
-<!-- Full-width centered navigation -->
+<!-- Compact 2-tile navigation -->
 <div class="pagination-container">
   <div class="pagination" id="pagination"></div>
 </div>
@@ -184,8 +195,22 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     prevBtn.href = `?page=${currentPage - 1}`;
     pagination.appendChild(prevBtn);
 
-    // Page Title buttons (centered flow)
-    pages.forEach((pageItem, idx) => {
+    // Responsive windowing: Show only 2 page tiles on mobile
+    const isMobile = window.innerWidth <= 600;
+    let visibleIndices = [];
+
+    if (isMobile && pages.length > 2) {
+      if (currentPage === pages.length) {
+        visibleIndices = [currentPage - 2, currentPage - 1];
+      } else {
+        visibleIndices = [currentPage - 1, currentPage];
+      }
+    } else {
+      visibleIndices = pages.map((_, i) => i);
+    }
+
+    visibleIndices.forEach(idx => {
+      const pageItem = pages[idx];
       const pageNum = idx + 1;
       const a = document.createElement('a');
       a.href = `?page=${pageNum}`;
