@@ -40,7 +40,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px; text-align:center;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
 
-/* Workshop Heading: 20px (2pt more than surrounding 18px text) */
+/* Workshop Heading: 20px */
 .workshop-heading {
   text-align: left;
   font-size: 20px;
@@ -112,7 +112,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 <body>
 
 <div class="header">
-  <div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ ಪದಾರ್ಥ ↔</div>
+  <div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ_ಪದಾರ್ಥ ↔</div>
 </div>
 
 <div class="top-nav">
@@ -132,7 +132,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 </div>
 
 <div class="footer">
-  <div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ ಪದಾರ್ಥ ⇒</div>
+  <div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ_ಪದಾರ್ಥ ⇒</div>
 </div>
 
 <script>
@@ -160,12 +160,16 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     const contentArea = document.getElementById('content-area');
     
     if (data) {
+      const hasLongText = data.longText && data.longText.trim().length > 0;
+      const hasShort1 = data.short1 && data.short1.trim().length > 0;
+      const hasShort2 = data.short2 && data.short2.trim().length > 0;
+
       contentArea.innerHTML = `
         <div class="word">
           <h2>${data.title || ''}</h2>
-          ${data.short1 ? `<p>${data.short1}</p>` : ''}
-          ${data.short2 ? `<p>${data.short2}</p>` : ''}
-          ${data.longText ? `<h3 class="workshop-heading">Workshop</h3><p>${data.longText}</p>` : ''}
+          ${hasShort1 ? `<p>${data.short1}</p>` : ''}
+          ${hasShort2 ? `<p>${data.short2}</p>` : ''}
+          ${hasLongText ? `<h3 class="workshop-heading">Workshop</h3><p>${data.longText}</p>` : ''}
         </div>
       `;
     }
