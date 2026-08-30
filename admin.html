@@ -8,9 +8,28 @@
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
 .footer{background:black; color:#FFD700; padding:15px 0; text-align:center; font-weight:bold; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%; z-index:10;}
-.top-nav{display:flex; justify-content:flex-end; padding:10px 20px 0; max-width:650px; margin:auto;}
-.home-btn{background:#FFD700; color:#000; text-decoration:none; padding:6px 14px; border-radius:6px; font-weight:bold; font-size:14px; border:1px solid #b8860b; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.home-btn:hover{background:#e6c200;}
+.top-nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px 0;
+  max-width: 650px;
+  margin: auto;
+}
+.nav-btn{
+  background:#FFD700;
+  color:#000;
+  text-decoration:none;
+  padding:6px 14px;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:14px;
+  border:1px solid #b8860b;
+  cursor:pointer;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+.nav-btn:hover{background:#e6c200;}
+
 .main{padding:20px 20px 100px 20px; max-width:650px; margin:auto;}
 .card{border:2px solid #FFD700; padding:25px; background:white; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
 h2{margin-top:0; color:#b8860b; text-align:center;}
@@ -21,10 +40,6 @@ input:focus, textarea:focus{border-color:#b8860b; outline:none;}
 .password-wrapper{position:relative; display:flex; align-items:center;}
 .password-wrapper input{padding-right:42px;}
 .toggle-eye{position:absolute; right:12px; cursor:pointer; user-select:none; font-size:18px; color:#777;}
-
-.tab-bar{display:flex; gap:10px; margin-bottom:20px;}
-.tab-btn{flex:1; padding:10px; border:2px solid #b8860b; background:white; color:#b8860b; font-weight:bold; font-size:16px; border-radius:6px; cursor:pointer;}
-.tab-btn.active{background:#b8860b; color:white;}
 
 button.submit-btn{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
 button.submit-btn:hover{background:#996f08;}
@@ -42,8 +57,10 @@ button.cancel-btn{background:#888; color:white; border:none; padding:10px 20px; 
 
 <div class="header">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
+<!-- Navigation Line -->
 <div class="top-nav">
-  <button onclick="goToHome()" class="home-btn">ಮುಖಪುಟ (Home)</button>
+  <button id="btn-edit-toggle" onclick="showEditList()" class="nav-btn" style="display:none;">ಸಂಪಾದಿಸಿ</button>
+  <button onclick="goToHome()" class="nav-btn">ಮುಖಪುಟ (Home)</button>
 </div>
 
 <div class="main">
@@ -59,14 +76,10 @@ button.cancel-btn{background:#888; color:white; border:none; padding:10px 20px; 
     <div id="auth-msg" class="error"></div>
   </div>
 
-  <!-- Dashboard Section -->
+  <!-- Dashboard Container -->
   <div id="dashboard-section" style="display:none;">
-    <div class="tab-bar">
-      <button id="tab-add" class="tab-btn active" onclick="switchTab('add')">ಹೊಸ ಪುಟ ಸೇರಿಸಿ</button>
-      <button id="tab-edit" class="tab-btn" onclick="switchTab('edit')">ಸಂಪಾದಿಸಿ</button>
-    </div>
-
-    <!-- Create Mode -->
+    
+    <!-- Add New Page View (Default) -->
     <div id="create-view" class="card">
       <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
       <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
@@ -85,13 +98,14 @@ button.cancel-btn{background:#888; color:white; border:none; padding:10px 20px; 
       <div id="create-status" class="status"></div>
     </div>
 
-    <!-- Edit Selection View -->
+    <!-- Edit List Selection View -->
     <div id="edit-list-view" class="card" style="display:none;">
       <h2>ಪುಟ ಸಂಪಾದಿಸಿ</h2>
       <label>ಹುಡುಕಿ (Search by title):</label>
       <input type="text" id="search-box" placeholder="ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ..." oninput="filterTiles()">
       
       <div class="tiles-grid" id="tiles-container"></div>
+      <button class="cancel-btn" onclick="showAddForm()">ಹೊಸ ಪುಟ ಸೇರಿಸಲು ಹಿಂತಿರುಗಿ</button>
     </div>
 
     <!-- Edit Form View -->
@@ -231,6 +245,7 @@ async function decryptAndLogin() {
     decryptedToken = new TextDecoder().decode(decrypted);
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('dashboard-section').style.display = 'block';
+    document.getElementById('btn-edit-toggle').style.display = 'inline-block';
     loadPages();
   } catch (err) {
     attemptsLeft--;
@@ -242,21 +257,17 @@ async function decryptAndLogin() {
   }
 }
 
-function switchTab(tab) {
-  if (tab === 'add') {
-    document.getElementById('tab-add').className = 'tab-btn active';
-    document.getElementById('tab-edit').className = 'tab-btn';
-    document.getElementById('create-view').style.display = 'block';
-    document.getElementById('edit-list-view').style.display = 'none';
-    document.getElementById('edit-form-view').style.display = 'none';
-  } else {
-    document.getElementById('tab-add').className = 'tab-btn';
-    document.getElementById('tab-edit').className = 'tab-btn active';
-    document.getElementById('create-view').style.display = 'none';
-    document.getElementById('edit-list-view').style.display = 'block';
-    document.getElementById('edit-form-view').style.display = 'none';
-    loadPages();
-  }
+function showEditList() {
+  document.getElementById('create-view').style.display = 'none';
+  document.getElementById('edit-form-view').style.display = 'none';
+  document.getElementById('edit-list-view').style.display = 'block';
+  loadPages();
+}
+
+function showAddForm() {
+  document.getElementById('edit-list-view').style.display = 'none';
+  document.getElementById('edit-form-view').style.display = 'none';
+  document.getElementById('create-view').style.display = 'block';
 }
 
 async function loadPages() {
