@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ಕನ್ನಡ_ಪದಾರ್ಥ - Admin</title>
+<title>ಕನ್ನಡ_ಪದಾರ್ಥ - ನಿರ್ವಾಹಕ</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
-.footer{background:black; color:#FFD700; padding:15px 0; text-align:center; font-weight:bold; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%;}
+.footer{background:black; color:#FFD700; padding:15px 0; text-align:center; font-weight:bold; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%; z-index:10;}
 .top-nav{display:flex; justify-content:flex-end; padding:10px 20px 0; max-width:650px; margin:auto;}
 .home-btn{background:#FFD700; color:#000; text-decoration:none; padding:6px 14px; border-radius:6px; font-weight:bold; font-size:14px; border:1px solid #b8860b; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
 .home-btn:hover{background:#e6c200;}
@@ -17,11 +17,23 @@ h2{margin-top:0; color:#b8860b; text-align:center;}
 label{display:block; margin:15px 0 5px; font-weight:bold; color:#333;}
 input[type="text"], input[type="password"], textarea{width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:inherit; font-size:16px; box-sizing:border-box;}
 input:focus, textarea:focus{border-color:#b8860b; outline:none;}
+
 .password-wrapper{position:relative; display:flex; align-items:center;}
 .password-wrapper input{padding-right:42px;}
 .toggle-eye{position:absolute; right:12px; cursor:pointer; user-select:none; font-size:18px; color:#777;}
+
+.tab-bar{display:flex; gap:10px; margin-bottom:20px;}
+.tab-btn{flex:1; padding:10px; border:2px solid #b8860b; background:white; color:#b8860b; font-weight:bold; font-size:16px; border-radius:6px; cursor:pointer;}
+.tab-btn.active{background:#b8860b; color:white;}
+
 button.submit-btn{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
 button.submit-btn:hover{background:#996f08;}
+button.cancel-btn{background:#888; color:white; border:none; padding:10px 20px; font-size:14px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:10px;}
+
+.tiles-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; margin-top:15px; max-height:300px; overflow-y:auto; padding:5px;}
+.page-tile{background:#fffaf0; border:1px solid #b8860b; padding:12px 8px; border-radius:8px; text-align:center; cursor:pointer; font-weight:bold; color:#333; transition:0.2s;}
+.page-tile:hover{background:#FFD700; color:#000;}
+
 .error{color:red; text-align:center; margin-top:10px;}
 .status{text-align:center; margin-top:15px; font-weight:bold;}
 </style>
@@ -47,30 +59,65 @@ button.submit-btn:hover{background:#996f08;}
     <div id="auth-msg" class="error"></div>
   </div>
 
-  <!-- Form Section -->
-  <div id="form-section" class="card" style="display:none;">
-    <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
+  <!-- Dashboard Section -->
+  <div id="dashboard-section" style="display:none;">
+    <div class="tab-bar">
+      <button id="tab-add" class="tab-btn active" onclick="switchTab('add')">ಹೊಸ ಪುಟ ಸೇರಿಸಿ</button>
+      <button id="tab-edit" class="tab-btn" onclick="switchTab('edit')">ಸಂಪಾದಿಸಿ</button>
+    </div>
 
-    <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
-    <input type="text" id="page-title">
+    <!-- Create Mode -->
+    <div id="create-view" class="card">
+      <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
+      <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
+      <input type="text" id="page-title">
 
-    <label>ಸ್ಲಗ್:</label>
-    <input type="text" id="page-slug">
+      <label>ವಿವರಣೆ ೧:</label>
+      <textarea id="short1" rows="3"></textarea>
 
-    <label>ವಿವರಣೆ ೧:</label>
-    <textarea id="short1" rows="3"></textarea>
+      <label>ವಿವರಣೆ ೨:</label>
+      <textarea id="short2" rows="3"></textarea>
 
-    <label>ವಿವರಣೆ ೨:</label>
-    <textarea id="short2" rows="3"></textarea>
+      <label>ಮುಖ್ಯ ವಿವರಣೆ:</label>
+      <textarea id="longText" rows="8"></textarea>
 
-    <label>ಮುಖ್ಯ ವಿವರಣೆ:</label>
-    <textarea id="longText" rows="8"></textarea>
+      <button class="submit-btn" onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
+      <div id="create-status" class="status"></div>
+    </div>
 
-    <button class="submit-btn" onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
-    <div id="status-msg" class="status"></div>
+    <!-- Edit Selection View -->
+    <div id="edit-list-view" class="card" style="display:none;">
+      <h2>ಪುಟ ಸಂಪಾದಿಸಿ</h2>
+      <label>ಹುಡುಕಿ (Search by title):</label>
+      <input type="text" id="search-box" placeholder="ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ..." oninput="filterTiles()">
+      
+      <div class="tiles-grid" id="tiles-container"></div>
+    </div>
+
+    <!-- Edit Form View -->
+    <div id="edit-form-view" class="card" style="display:none;">
+      <h2>ಪುಟ ನವೀಕರಿಸಿ</h2>
+      <input type="hidden" id="edit-page-id">
+
+      <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
+      <input type="text" id="edit-title">
+
+      <label>ವಿವರಣೆ ೧:</label>
+      <textarea id="edit-short1" rows="3"></textarea>
+
+      <label>ವಿವರಣೆ ೨:</label>
+      <textarea id="edit-short2" rows="3"></textarea>
+
+      <label>ಮುಖ್ಯ ವಿವರಣೆ:</label>
+      <textarea id="edit-longText" rows="8"></textarea>
+
+      <button class="submit-btn" onclick="savePageEdit()">ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ</button>
+      <button class="cancel-btn" onclick="cancelEdit()">ರದ್ದುಮಾಡಿ (Cancel)</button>
+      <div id="edit-status" class="status"></div>
+    </div>
   </div>
 
-  <!-- Encryptor Tool (Setup helper if ciphertext is not yet set) -->
+  <!-- Setup Helper -->
   <div id="setup-section" class="card" style="display:none; margin-top:20px; border-color:#999;">
     <h3>Initial One-Time Setup</h3>
     <label>Enter your GitHub Token:</label>
@@ -84,10 +131,15 @@ button.submit-btn:hover{background:#996f08;}
 
 <script>
 // --- PASTE YOUR ENCRYPTED PAYLOAD HERE ---
-const ENCRYPTED_PAYLOAD = "eyJzYWx0IjpbMTYxLDIyOSwxMzcsNDMsMTA1LDE5NiwzOCwxNDEsMjIxLDMyLDExNyw2NywyNCwyNCw1Myw4NV0sIml2IjpbMjI2LDE0Miw2OCw3OCwxMTEsNzgsMjUwLDgyLDc5LDk5LDQ1LDE5N10sImRhdGEiOlsxNjgsMjE2LDIyNCwyMywxODUsNDUsNzUsNTIsNDgsMTgzLDIxLDc4LDI1MywyNSwxNjMsMTM0LDIyNiwxMzQsODEsMjQyLDU2LDEyNCwyOSwyNywxODQsMTUyLDEzNiw5OSwyMSwxMDgsMTQ4LDIzNSwyMzQsMjI5LDE5NiwxMzUsMTQxLDEwMyw5MCwyMDQsMjIxLDIxOSwyNTUsNjcsMTksMTUyLDg5LDExMCwxNzksMTAzLDcsNzAsMjIxLDExNiwyMDksMTMyXX0="; // Paste the output from setup tool here
+const ENCRYPTED_PAYLOAD = "";
 
 let decryptedToken = null;
 let attemptsLeft = 3;
+let allPages = [];
+
+const owner = "marmakki-manjunatha";
+const repo = "kannadapadaartha";
+const path = "data.json";
 
 function goToHome() {
   window.location.href = 'index.html?t=' + Date.now();
@@ -104,7 +156,6 @@ function toggleVisibility(inputId, iconElement) {
   }
 }
 
-// AES-GCM Key Derivation via PBKDF2
 async function getKey(password, salt) {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
@@ -115,12 +166,7 @@ async function getKey(password, salt) {
     ["deriveKey"]
   );
   return crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt: salt,
-      iterations: 100000,
-      hash: "SHA-256"
-    },
+    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
     keyMaterial,
     { name: "AES-GCM", length: 256 },
     false,
@@ -128,7 +174,6 @@ async function getKey(password, salt) {
   );
 }
 
-// Setup Helper: Run once in browser if ENCRYPTED_PAYLOAD is blank
 window.onload = function() {
   if (!ENCRYPTED_PAYLOAD) {
     document.getElementById('setup-section').style.display = 'block';
@@ -185,7 +230,8 @@ async function decryptAndLogin() {
 
     decryptedToken = new TextDecoder().decode(decrypted);
     document.getElementById('auth-section').style.display = 'none';
-    document.getElementById('form-section').style.display = 'block';
+    document.getElementById('dashboard-section').style.display = 'block';
+    loadPages();
   } catch (err) {
     attemptsLeft--;
     if (attemptsLeft > 0) {
@@ -196,19 +242,91 @@ async function decryptAndLogin() {
   }
 }
 
-async function submitNewPage() {
-  if (!decryptedToken) {
-    alert("ದಯವಿಟ್ಟು ಮೊದಲು ಲಾಗಿನ್ ಆಗಿ (Session expired, please log in again).");
-    location.reload();
+function switchTab(tab) {
+  if (tab === 'add') {
+    document.getElementById('tab-add').className = 'tab-btn active';
+    document.getElementById('tab-edit').className = 'tab-btn';
+    document.getElementById('create-view').style.display = 'block';
+    document.getElementById('edit-list-view').style.display = 'none';
+    document.getElementById('edit-form-view').style.display = 'none';
+  } else {
+    document.getElementById('tab-add').className = 'tab-btn';
+    document.getElementById('tab-edit').className = 'tab-btn active';
+    document.getElementById('create-view').style.display = 'none';
+    document.getElementById('edit-list-view').style.display = 'block';
+    document.getElementById('edit-form-view').style.display = 'none';
+    loadPages();
+  }
+}
+
+async function loadPages() {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
+  try {
+    const res = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (res.ok) {
+      const fileInfo = await res.json();
+      const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+      allPages = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+      renderTiles(allPages);
+    }
+  } catch (e) {}
+}
+
+function renderTiles(pages) {
+  const container = document.getElementById('tiles-container');
+  container.innerHTML = '';
+  if (!pages || pages.length === 0) {
+    container.innerHTML = '<p style="text-align:center; width:100%;">ಯಾವುದೇ ಪುಟಗಳಿಲ್ಲ.</p>';
     return;
   }
+  pages.forEach(p => {
+    const tile = document.createElement('div');
+    tile.className = 'page-tile';
+    tile.textContent = p.title || `Page ${p.id}`;
+    tile.onclick = () => openEditForm(p.id);
+    container.appendChild(tile);
+  });
+}
 
+function filterTiles() {
+  const query = document.getElementById('search-box').value.toLowerCase().trim();
+  const filtered = allPages.filter(p => (p.title || '').toLowerCase().includes(query));
+  renderTiles(filtered);
+}
+
+function openEditForm(pageId) {
+  const page = allPages.find(p => p.id === pageId);
+  if (!page) return;
+
+  document.getElementById('edit-page-id').value = page.id;
+  document.getElementById('edit-title').value = page.title || '';
+  document.getElementById('edit-short1').value = page.short1 || '';
+  document.getElementById('edit-short2').value = page.short2 || '';
+  document.getElementById('edit-longText').value = page.longText || '';
+  document.getElementById('edit-status').textContent = '';
+
+  document.getElementById('edit-list-view').style.display = 'none';
+  document.getElementById('edit-form-view').style.display = 'block';
+}
+
+function cancelEdit() {
+  document.getElementById('edit-form-view').style.display = 'none';
+  document.getElementById('edit-list-view').style.display = 'block';
+}
+
+async function submitNewPage() {
+  if (!decryptedToken) return location.reload();
   const title = document.getElementById('page-title').value.trim();
-  const slug = document.getElementById('page-slug').value.trim();
   const short1 = document.getElementById('short1').value.trim();
   const short2 = document.getElementById('short2').value.trim();
   const longText = document.getElementById('longText').value.trim();
-  const status = document.getElementById('status-msg');
+  const status = document.getElementById('create-status');
 
   if (!title) {
     status.style.color = "red";
@@ -219,9 +337,7 @@ async function submitNewPage() {
   status.style.color = "#b8860b";
   status.textContent = "ಉಳಿಸಲಾಗುತ್ತಿದೆ...";
 
-  const owner = "marmakki-manjunatha";
-  const repo = "kannadapadaartha";
-  const path = "data.json";
+  const autoSlug = title.toLowerCase().replace(/\s+/g, '-');
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
 
   try {
@@ -232,26 +348,19 @@ async function submitNewPage() {
       }
     });
 
-    if (!getRes.ok && getRes.status !== 404) {
-      const errData = await getRes.json();
-      throw new Error(errData.message || "Failed to fetch file info");
-    }
-
     let currentData = [];
     let sha = null;
-
     if (getRes.ok) {
       const fileInfo = await getRes.json();
       sha = fileInfo.sha;
       const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
       const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-      const decodedText = new TextDecoder('utf-8').decode(bytes);
-      currentData = JSON.parse(decodedText);
+      currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
     }
 
     const newPage = {
       id: currentData.length + 1,
-      slug: slug || `page-${currentData.length + 1}`,
+      slug: autoSlug,
       title: title,
       short1: short1,
       short2: short2,
@@ -283,10 +392,95 @@ async function submitNewPage() {
       status.style.color = "green";
       status.textContent = `ಪುಟ #${newPage.id} ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕಟಿಸಲಾಗಿದೆ!`;
       document.getElementById('page-title').value = '';
-      document.getElementById('page-slug').value = '';
       document.getElementById('short1').value = '';
       document.getElementById('short2').value = '';
       document.getElementById('longText').value = '';
+      allPages = currentData;
+    } else {
+      const errData = await putRes.json();
+      status.style.color = "red";
+      status.textContent = `ದೋಷ: ${errData.message}`;
+    }
+  } catch (err) {
+    status.style.color = "red";
+    status.textContent = `ದೋಷ: ${err.message}`;
+  }
+}
+
+async function savePageEdit() {
+  if (!decryptedToken) return location.reload();
+  const id = parseInt(document.getElementById('edit-page-id').value);
+  const title = document.getElementById('edit-title').value.trim();
+  const short1 = document.getElementById('edit-short1').value.trim();
+  const short2 = document.getElementById('edit-short2').value.trim();
+  const longText = document.getElementById('edit-longText').value.trim();
+  const status = document.getElementById('edit-status');
+
+  if (!title) {
+    status.style.color = "red";
+    status.textContent = "ದಯವಿಟ್ಟು ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ.";
+    return;
+  }
+
+  status.style.color = "#b8860b";
+  status.textContent = "ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ...";
+
+  const autoSlug = title.toLowerCase().replace(/\s+/g, '-');
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
+
+  try {
+    const getRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (!getRes.ok) throw new Error("Failed to fetch latest content");
+
+    const fileInfo = await getRes.json();
+    const sha = fileInfo.sha;
+    const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
+    const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+    let currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+    const index = currentData.findIndex(p => p.id === id);
+    if (index !== -1) {
+      currentData[index].title = title;
+      currentData[index].slug = autoSlug;
+      currentData[index].short1 = short1;
+      currentData[index].short2 = short2;
+      currentData[index].longText = longText;
+    }
+
+    const jsonString = JSON.stringify(currentData, null, 2);
+    const utf8Bytes = new TextEncoder().encode(jsonString);
+    let binary = '';
+    utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+    const base64Content = btoa(binary);
+
+    const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Update page: ${title}`,
+        content: base64Content,
+        sha: sha
+      })
+    });
+
+    if (putRes.ok) {
+      status.style.color = "green";
+      status.textContent = "ಪುಟ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ!";
+      allPages = currentData;
+      setTimeout(() => {
+        cancelEdit();
+        renderTiles(allPages);
+      }, 1000);
     } else {
       const errData = await putRes.json();
       status.style.color = "red";
