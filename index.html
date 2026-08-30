@@ -40,9 +40,10 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px; text-align:center;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
 
+/* Workshop Heading: 20px (2pt more than surrounding 18px text) */
 .workshop-heading {
   text-align: left;
-  font-size: 22px;
+  font-size: 20px;
   color: #b8860b;
   margin-top: 25px;
   margin-bottom: 10px;
@@ -50,7 +51,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   padding-bottom: 5px;
 }
 
-/* Full-width pinned navigation bar (no scrollbar) */
+/* Full-width pinned navigation bar */
 .pagination-container{
   position:fixed; 
   bottom:55px; 
@@ -111,7 +112,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 <body>
 
 <div class="header">
-  <div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ_ಪದಾರ್ಥ ↔</div>
+  <div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ ಪದಾರ್ಥ ↔</div>
 </div>
 
 <div class="top-nav">
@@ -119,7 +120,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 </div>
 
 <div class="main">
-  <h1>ಕನ್ನಡ_ಪದಾರ್ಥ</h1>
+  <h1>ಕನ್ನಡ ಪದಾರ್ಥ</h1>
   <p class="subtitle">ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ • ಭಾಷಾ ಸಂಶೋಧನೆ</p>
 
   <div id="content-area"></div>
@@ -131,7 +132,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 </div>
 
 <div class="footer">
-  <div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ_ಪದಾರ್ಥ ⇒</div>
+  <div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ ಪದಾರ್ಥ ⇒</div>
 </div>
 
 <script>
@@ -154,18 +155,17 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     let currentPage = parseInt(params.get('page')) || 1;
     if (currentPage < 1 || currentPage > pages.length) currentPage = 1;
 
+    // Display current page content
     const data = pages[currentPage - 1];
     const contentArea = document.getElementById('content-area');
     
     if (data) {
-      const hasVivarane = data.short1 || data.short2 || data.longText;
       contentArea.innerHTML = `
         <div class="word">
           <h2>${data.title || ''}</h2>
-          ${hasVivarane ? `<h3 class="workshop-heading">Workshop</h3>` : ''}
           ${data.short1 ? `<p>${data.short1}</p>` : ''}
           ${data.short2 ? `<p>${data.short2}</p>` : ''}
-          ${data.longText ? `<p>${data.longText}</p>` : ''}
+          ${data.longText ? `<h3 class="workshop-heading">Workshop</h3><p>${data.longText}</p>` : ''}
         </div>
       `;
     }
