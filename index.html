@@ -50,7 +50,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   padding-bottom: 5px;
 }
 
-/* Pinned Bottom Navigation */
+/* Bottom Navigation Container */
 .pagination-container{
   position:fixed; 
   bottom:55px; 
@@ -66,15 +66,15 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   align-items:center; 
   justify-content:center; 
   flex-wrap:nowrap; 
-  gap:10px; 
+  gap:8px; 
   width:100%; 
-  max-width:950px; 
+  max-width:1200px; 
   margin:auto; 
   padding:0 15px;
   box-sizing:border-box;
 }
 .page-btn{
-  padding:7px 14px; 
+  padding:7px 12px; 
   text-decoration:none; 
   background:white; 
   color:#b8860b; 
@@ -82,7 +82,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   border-radius:6px; 
   font-weight:bold; 
   cursor:pointer; 
-  font-size:15px;
+  font-size:14px;
   white-space:nowrap;
   text-align:center;
 }
@@ -91,13 +91,13 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   color:black;
 }
 .arrow-btn{
-  padding:7px 14px;
+  padding:7px 12px;
   text-decoration:none;
   background:#b8860b;
   color:white;
   border-radius:6px;
   font-weight:bold;
-  font-size:15px;
+  font-size:14px;
   cursor:pointer;
   border:none;
   white-space:nowrap;
@@ -109,7 +109,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   pointer-events:none;
 }
 
-/* Mobile Rules */
+/* Mobile Adjustments */
 @media(max-width: 768px){
   h1{font-size:32px;}
   .word h2{font-size:26px;}
@@ -208,9 +208,9 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     prevBtn.href = `?page=${currentPage - 1}`;
     pagination.appendChild(prevBtn);
 
-    // Visible Window Calculation
+    // Visible Window Calculation: 2 for mobile, 8 for desktop
     let visibleIndices = [];
-    const maxButtons = isMobile ? 2 : 5;
+    const maxButtons = isMobile ? 2 : 8;
 
     if (pages.length <= maxButtons) {
       visibleIndices = pages.map((_, i) => i);
