@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ಕನ್ನಡ_ಪದಾರ್ಥ - ಮಾರ್ಮಕ್ಕಿ ಮಞಾತ</title>
+<title>ಕನ್ನಡ ಪದಾರ್ಥ - ಮಾರ್ಮಕ್ಕಿ ಮಞಾತ</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
 .header{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-bottom:3px solid #FFD700;}
@@ -37,8 +37,19 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
 h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .subtitle{text-align:center; color:#555; margin-bottom:30px;}
 .word{border:2px solid #FFD700; padding:20px; background:white; margin:20px 0; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px;}
+.word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px; text-align:center;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
+
+/* New Workshop Heading Style */
+.workshop-heading {
+  text-align: left;
+  font-size: 22px;
+  color: #b8860b;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e0d0b0;
+  padding-bottom: 5px;
+}
 
 /* Pinned Navigation Bar above footer */
 .pagination-container{
@@ -146,9 +157,11 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     const contentArea = document.getElementById('content-area');
     
     if (data) {
+      const hasVivarane = data.short1 || data.short2 || data.longText;
       contentArea.innerHTML = `
         <div class="word">
           <h2>${data.title || ''}</h2>
+          ${hasVivarane ? `<h3 class="workshop-heading">Workshop</h3>` : ''}
           ${data.short1 ? `<p>${data.short1}</p>` : ''}
           ${data.short2 ? `<p>${data.short2}</p>` : ''}
           ${data.longText ? `<p>${data.longText}</p>` : ''}
