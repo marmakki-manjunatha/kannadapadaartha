@@ -40,7 +40,6 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 .word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px; text-align:center;}
 .word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
 
-/* Workshop Heading: 20px */
 .workshop-heading {
   text-align: left;
   font-size: 20px;
@@ -51,14 +50,14 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   padding-bottom: 5px;
 }
 
-/* Fixed Bottom Navigation Container */
+/* Single-Line Fixed Bottom Navigation */
 .pagination-container{
   position:fixed; 
   bottom:55px; 
   left:0; 
   width:100%; 
   background:rgba(255, 250, 240, 0.98); 
-  padding:10px 0; 
+  padding:8px 0; 
   z-index:9; 
   border-top:1px solid #e0d0b0;
 }
@@ -67,14 +66,16 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   align-items:center; 
   justify-content:center; 
   flex-wrap:nowrap; 
-  gap:6px; 
+  gap:8px; 
   width:100%; 
-  max-width:850px; 
+  max-width:800px; 
   margin:auto; 
-  padding:0 10px;
+  padding:0 8px;
   box-sizing:border-box;
 }
 .page-btn{
+  flex: 1;
+  max-width: 140px;
   padding:6px 10px; 
   text-decoration:none; 
   background:white; 
@@ -85,26 +86,26 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   cursor:pointer; 
   font-size:14px;
   white-space:nowrap;
-  max-width: 140px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-align:center;
 }
 .page-btn.active{
   background:#FFD700; 
   color:black;
 }
 .arrow-btn{
-  padding:6px 10px;
+  padding:6px 12px;
   text-decoration:none;
   background:#b8860b;
   color:white;
   border-radius:6px;
   font-weight:bold;
-  font-size:14px;
+  font-size:15px;
   cursor:pointer;
   border:none;
   white-space:nowrap;
+  flex-shrink: 0;
 }
 .arrow-btn.disabled{
   background:#ccc;
@@ -115,8 +116,8 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
 @media(max-width: 600px){
   h1{font-size:32px;}
   .word h2{font-size:26px;}
-  .page-btn{font-size:13px; max-width:110px; padding:6px 8px;}
-  .arrow-btn{font-size:13px; padding:6px 8px;}
+  .page-btn{font-size:13px; max-width:130px; padding:6px 6px;}
+  .arrow-btn{font-size:14px; padding:6px 10px;}
 }
 </style>
 </head>
@@ -137,7 +138,7 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   <div id="content-area"></div>
 </div>
 
-<!-- Compact 2-tile navigation -->
+<!-- Single-line strictly formatted navigation -->
 <div class="pagination-container">
   <div class="pagination" id="pagination"></div>
 </div>
@@ -188,25 +189,21 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
-    // Previous Arrow Button (←)
+    // Previous Arrow Button (<<)
     const prevBtn = document.createElement('a');
-    prevBtn.innerHTML = '&larr; ಹಿಂದಿನದು';
+    prevBtn.innerHTML = '&laquo;';
     prevBtn.className = `arrow-btn ${currentPage === 1 ? 'disabled' : ''}`;
     prevBtn.href = `?page=${currentPage - 1}`;
     pagination.appendChild(prevBtn);
 
-    // Responsive windowing: Show only 2 page tiles on mobile
-    const isMobile = window.innerWidth <= 600;
+    // Show only 2 page tiles centered in the single line
     let visibleIndices = [];
-
-    if (isMobile && pages.length > 2) {
-      if (currentPage === pages.length) {
-        visibleIndices = [currentPage - 2, currentPage - 1];
-      } else {
-        visibleIndices = [currentPage - 1, currentPage];
-      }
-    } else {
+    if (pages.length <= 2) {
       visibleIndices = pages.map((_, i) => i);
+    } else if (currentPage === pages.length) {
+      visibleIndices = [currentPage - 2, currentPage - 1];
+    } else {
+      visibleIndices = [currentPage - 1, currentPage];
     }
 
     visibleIndices.forEach(idx => {
@@ -219,9 +216,9 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
       pagination.appendChild(a);
     });
 
-    // Next Arrow Button (→)
+    // Next Arrow Button (>>)
     const nextBtn = document.createElement('a');
-    nextBtn.innerHTML = 'ಮುಂದಿನದು &rarr;';
+    nextBtn.innerHTML = '&raquo;';
     nextBtn.className = `arrow-btn ${currentPage === pages.length ? 'disabled' : ''}`;
     nextBtn.href = `?page=${currentPage + 1}`;
     pagination.appendChild(nextBtn);
