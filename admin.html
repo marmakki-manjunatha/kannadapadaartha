@@ -3,24 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ಕನ್ನಡ_ಪದಾರ್ಥ - ಮಾರ್ಮಕ್ಕಿ ಮಞಾತ</title>
+<title>ಕನ್ನಡ_ಪದಾರ್ಥ - ನಿರ್ವಾಹಕ</title>
 <style>
 body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;}
-.header{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-bottom:3px solid #FFD700;}
-.footer{background:black; color:#FFD700; padding:15px 0; overflow:hidden; white-space:nowrap; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%; z-index:10;}
-.scroll{animation: scroll 20s linear infinite; display:inline-block; padding-left:100%; font-size:20px; font-weight:bold;}
-.scroll2{animation: scroll2 20s linear infinite; display:inline-block; padding-left:100%; font-size:20px; font-weight:bold;}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
-@keyframes scroll2{0%{transform:translateX(-100%)}100%{transform:translateX(0)}}
-
+.header{background:black; color:#FFD700; padding:15px 0; text-align:center; font-size:22px; font-weight:bold; border-bottom:3px solid #FFD700;}
+.footer{background:black; color:#FFD700; padding:15px 0; text-align:center; font-weight:bold; border-top:3px solid #FFD700; position:fixed; bottom:0; width:100%; z-index:10;}
 .top-nav{
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 20px 0;
-  max-width: 900px;
+  max-width: 650px;
   margin: auto;
 }
-.admin-btn{
+.nav-btn{
   background:#FFD700;
   color:#000;
   text-decoration:none;
@@ -29,311 +25,482 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
   font-weight:bold;
   font-size:14px;
   border:1px solid #b8860b;
+  cursor:pointer;
   box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
-.admin-btn:hover{background:#e6c200;}
+.nav-btn:hover{background:#e6c200;}
 
-.main{padding:10px 20px 160px 20px; max-width:900px; margin:auto;}
-h1{text-align:center; font-size:40px; color:#222; margin-bottom:6px;}
-.subtitle{text-align:center; color:#555; margin-bottom:25px;}
+.main{padding:20px 20px 100px 20px; max-width:650px; margin:auto;}
+.card{border:2px solid #FFD700; padding:25px; background:white; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+h2{margin-top:0; color:#b8860b; text-align:center;}
+label{display:block; margin:15px 0 5px; font-weight:bold; color:#333;}
+input[type="text"], input[type="password"], textarea{width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:inherit; font-size:16px; box-sizing:border-box;}
+input:focus, textarea:focus{border-color:#b8860b; outline:none;}
 
-.word-card{
-  background:white;
-  border:2px solid #FFD700;
-  border-radius:12px;
-  padding:24px 20px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
-}
+.password-wrapper{position:relative; display:flex; align-items:center;}
+.password-wrapper input{padding-right:42px;}
+.toggle-eye{position:absolute; right:12px; cursor:pointer; user-select:none; font-size:18px; color:#777;}
 
-.word-card h2{
-  text-align:center;
-  color:#b8860b;
-  font-size:32px;
-  margin:0 0 25px 0;
-  border-bottom:2px solid #fff2b2;
-  padding-bottom:10px;
-}
+button.submit-btn{background:#b8860b; color:white; border:none; padding:12px 20px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:20px;}
+button.submit-btn:hover{background:#996f08;}
+button.cancel-btn{background:#888; color:white; border:none; padding:10px 20px; font-size:14px; font-weight:bold; border-radius:6px; cursor:pointer; width:100%; margin-top:10px;}
 
-.entry-row{
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 18px;
-  gap: 15px;
-}
+.tiles-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; margin-top:15px; max-height:300px; overflow-y:auto; padding:5px;}
+.page-tile{background:#fffaf0; border:1px solid #b8860b; padding:12px 8px; border-radius:8px; text-align:center; cursor:pointer; font-weight:bold; color:#333; transition:0.2s;}
+.page-tile:hover{background:#FFD700; color:#000;}
 
-.entry-label{
-  width: 170px;
-  min-width: 170px;
-  padding: 10px 8px;
-  border: 1.5px solid #222;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 16px;
-  text-align: center;
-  color: #111;
-  background: #fffdf5;
-  box-sizing: border-box;
-  line-height: 1.3;
-}
-
-.entry-content{
-  flex: 1;
-  border: 1.5px solid #222;
-  border-radius: 6px;
-  padding: 12px 16px;
-  font-size: 17px;
-  line-height: 1.6;
-  color: #222;
-  background: #fff;
-  white-space: pre-wrap;
-  box-sizing: border-box;
-}
-
-/* Bottom Navigation */
-.pagination-container{
-  position:fixed; 
-  bottom:55px; 
-  left:0; 
-  width:100%; 
-  background:rgba(255, 250, 240, 0.98); 
-  padding:10px 0; 
-  z-index:9; 
-  border-top:1px solid #e0d0b0;
-}
-.pagination{
-  display:flex; 
-  align-items:center; 
-  justify-content:center; 
-  flex-wrap:nowrap; 
-  gap:8px; 
-  width:100%; 
-  max-width:1200px; 
-  margin:auto; 
-  padding:0 15px;
-  box-sizing:border-box;
-}
-.page-btn{
-  padding:7px 12px; 
-  text-decoration:none; 
-  background:white; 
-  color:#b8860b; 
-  border:2px solid #FFD700; 
-  border-radius:6px; 
-  font-weight:bold; 
-  cursor:pointer; 
-  font-size:14px;
-  white-space:nowrap;
-  text-align:center;
-}
-.page-btn.active{
-  background:#FFD700; 
-  color:black;
-}
-.arrow-btn{
-  padding:7px 12px;
-  text-decoration:none;
-  background:#b8860b;
-  color:white;
-  border-radius:6px;
-  font-weight:bold;
-  font-size:14px;
-  cursor:pointer;
-  border:none;
-  white-space:nowrap;
-  flex-shrink:0;
-}
-.arrow-btn.disabled{
-  background:#ccc;
-  cursor:not-allowed;
-  pointer-events:none;
-}
-
-@media(max-width: 768px){
-  h1{font-size:30px;}
-  .word-card h2{font-size:24px;}
-  
-  .entry-row{
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 15px;
-  }
-  .entry-label{
-    width: 100%;
-    min-width: 100%;
-    text-align: left;
-    padding: 6px 10px;
-    font-size: 15px;
-  }
-  .entry-content{
-    width: 100%;
-    font-size: 15px;
-    padding: 10px 12px;
-  }
-
-  .pagination{
-    gap:6px; 
-    padding:0 8px;
-  }
-  .page-btn{
-    flex:1;
-    max-width:130px;
-    font-size:13px;
-    padding:6px 6px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .arrow-btn{
-    font-size:14px;
-    padding:6px 10px;
-  }
-}
+.error{color:red; text-align:center; margin-top:10px;}
+.status{text-align:center; margin-top:15px; font-weight:bold;}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="scroll">↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ ↔ ಕನ್ನಡ_ಪದಾರ್ಥ ↔</div>
-</div>
+<div class="header">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <div class="top-nav">
-  <a href="admin.html" class="admin-btn">ನಿರ್ವಾಹಕ (Admin)</a>
+  <button id="btn-edit-toggle" onclick="showEditList()" class="nav-btn" style="display:none;">ಸಂಪಾದಿಸಿ</button>
+  <button onclick="goToHome()" class="nav-btn">ಮುಖಪುಟ (Home)</button>
 </div>
 
 <div class="main">
-  <h1>ಕನ್ನಡ_ಪದಾರ್ಥ</h1>
-  <p class="subtitle">ಮಾರ್ಮಕ್ಕಿ ಮಞಾತನ ಕನ್ನಡಾಂಗ್ಲ ಪದಕೋಶ • ಭಾಷಾ ಸಂಶೋಧನೆ</p>
+  <!-- Auth Section -->
+  <div id="auth-section" class="card">
+    <h2>ಲಾಗಿನ್</h2>
+    <label for="admin-pass">ಪಾಸ್‌ವರ್ಡ್:</label>
+    <div class="password-wrapper">
+      <input type="password" id="admin-pass">
+      <span class="toggle-eye" onclick="toggleVisibility('admin-pass', this)">👁️</span>
+    </div>
+    <button class="submit-btn" onclick="decryptAndLogin()">ಲಾಗಿನ್</button>
+    <div id="auth-msg" class="error"></div>
+  </div>
 
-  <div id="content-area"></div>
+  <!-- Dashboard Container -->
+  <div id="dashboard-section" style="display:none;">
+    
+    <!-- Add New Page View (Default) -->
+    <div id="create-view" class="card">
+      <h2>ಹೊಸ ಪುಟ ಸೇರಿಸಿ</h2>
+      <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
+      <input type="text" id="page-title">
+
+      <label>ಆಚಾರ (AAchara):</label>
+      <textarea id="short1" rows="3"></textarea>
+
+      <label>ವಿಚಾರ (Vichaara):</label>
+      <textarea id="short2" rows="3"></textarea>
+
+      <label>WORKSHOP (De-Code):</label>
+      <textarea id="longText" rows="8"></textarea>
+
+      <button class="submit-btn" onclick="submitNewPage()">ಪುಟವನ್ನು ಪ್ರಕಟಿಸಿ</button>
+      <div id="create-status" class="status"></div>
+    </div>
+
+    <!-- Edit List Selection View -->
+    <div id="edit-list-view" class="card" style="display:none;">
+      <h2>ಪುಟ ಸಂಪಾದಿಸಿ</h2>
+      <label>ಹುಡುಕಿ (Search by title):</label>
+      <input type="text" id="search-box" placeholder="ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ..." oninput="filterTiles()">
+      
+      <div class="tiles-grid" id="tiles-container"></div>
+      <button class="cancel-btn" onclick="showAddForm()">ಹೊಸ ಪುಟ ಸೇರಿಸಲು ಹಿಂತಿರುಗಿ</button>
+    </div>
+
+    <!-- Edit Form View -->
+    <div id="edit-form-view" class="card" style="display:none;">
+      <h2>ಪುಟ ನವೀಕರಿಸಿ</h2>
+      <input type="hidden" id="edit-page-id">
+
+      <label>ಪುಟದ ಶೀರ್ಷಿಕೆ:</label>
+      <input type="text" id="edit-title">
+
+      <label>ಆಚಾರ (AAchara):</label>
+      <textarea id="edit-short1" rows="3"></textarea>
+
+      <label>ವಿಚಾರ (Vichaara):</label>
+      <textarea id="edit-short2" rows="3"></textarea>
+
+      <label>WORKSHOP (De-Code):</label>
+      <textarea id="edit-longText" rows="8"></textarea>
+
+      <button class="submit-btn" onclick="savePageEdit()">ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ</button>
+      <button class="cancel-btn" onclick="cancelEdit()">ರದ್ದುಮಾಡಿ (Cancel)</button>
+      <div id="edit-status" class="status"></div>
+    </div>
+  </div>
+
+  <!-- Setup Helper -->
+  <div id="setup-section" class="card" style="display:none; margin-top:20px; border-color:#999;">
+    <h3>Initial One-Time Setup</h3>
+    <label>Enter your GitHub Token:</label>
+    <input type="password" id="setup-token" placeholder="ghp_...">
+    <button class="submit-btn" style="background:#444;" onclick="generateEncryptedPayload()">Generate Encrypted Cipher</button>
+    <div id="setup-output" style="margin-top:10px; word-break:break-all; font-family:monospace; font-size:12px;"></div>
+  </div>
 </div>
 
-<div class="pagination-container">
-  <div class="pagination" id="pagination"></div>
-</div>
-
-<div class="footer">
-  <div class="scroll2">⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಇದು ಕನ್ನಡದ ಕಸ್ತೂರಿ ಭಾಷಾ ಪರಿಮಳ ⇒ ಕನ್ನಡ_ಪದಾರ್ಥ ⇒</div>
-</div>
+<div class="footer">ಕನ್ನಡ_ಪದಾರ್ಥ</div>
 
 <script>
-const apiUrl = 'https://api.github.com/repos/marmakki-manjunatha/kannadapadaartha/contents/data.json?t=' + Date.now();
+// --- PASTE YOUR ENCRYPTED PAYLOAD HERE ---
+const ENCRYPTED_PAYLOAD = "";
 
-fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
-  .then(res => res.json())
-  .then(fileInfo => {
-    const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
-    const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-    const decodedText = new TextDecoder('utf-8').decode(bytes);
-    const pages = JSON.parse(decodedText);
+let decryptedToken = null;
+let attemptsLeft = 3;
+let allPages = [];
 
-    if (!Array.isArray(pages) || pages.length === 0) {
-      document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಯಾವುದೇ ಪುಟಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>';
-      return;
-    }
+const owner = "marmakki-manjunatha";
+const repo = "kannadapadaartha";
+const path = "data.json";
 
-    const params = new URLSearchParams(window.location.search);
-    let currentPage = parseInt(params.get('page')) || 1;
-    if (currentPage < 1 || currentPage > pages.length) currentPage = 1;
+function goToHome() {
+  window.location.href = 'index.html?t=' + Date.now();
+}
 
-    const data = pages[currentPage - 1];
-    const contentArea = document.getElementById('content-area');
-    
-    if (data) {
-      const s1 = data.short1 && data.short1.trim().length > 0 ? data.short1 : null;
-      const s2 = data.short2 && data.short2.trim().length > 0 ? data.short2 : null;
-      const longTxt = data.longText && data.longText.trim().length > 0 ? data.longText : null;
+function toggleVisibility(inputId, iconElement) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    iconElement.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    iconElement.textContent = '👁️';
+  }
+}
 
-      let html = `<div class="word-card">`;
-      html += `<h2>${data.title || ''}</h2>`;
+async function getKey(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
 
-      if (s1) {
-        html += `
-          <div class="entry-row">
-            <div class="entry-label">ಆಚಾರ (AAchara)</div>
-            <div class="entry-content">${s1}</div>
-          </div>
-        `;
-      }
+window.onload = function() {
+  if (!ENCRYPTED_PAYLOAD) {
+    document.getElementById('setup-section').style.display = 'block';
+  }
+};
 
-      if (s2) {
-        html += `
-          <div class="entry-row">
-            <div class="entry-label">ವಿಚಾರ (Vichaara)</div>
-            <div class="entry-content">${s2}</div>
-          </div>
-        `;
-      }
+async function generateEncryptedPayload() {
+  const token = document.getElementById('setup-token').value.trim();
+  const pass = "manjunaTHAgitHUB";
+  if (!token) return alert("Enter token");
 
-      if (longTxt) {
-        html += `
-          <div class="entry-row">
-            <div class="entry-label">WORKSHOP<br><small style="font-size:12px; font-weight:normal;">De-code</small></div>
-            <div class="entry-content">${longTxt}</div>
-          </div>
-        `;
-      }
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await getKey(pass, salt);
 
-      html += `</div>`;
-      contentArea.innerHTML = html;
-    }
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: iv },
+    key,
+    new TextEncoder().encode(token)
+  );
 
-    const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
-    
-    const isMobile = window.innerWidth <= 768;
+  const payload = {
+    salt: Array.from(salt),
+    iv: Array.from(iv),
+    data: Array.from(new Uint8Array(encrypted))
+  };
 
-    const prevBtn = document.createElement('a');
-    prevBtn.innerHTML = isMobile ? '&laquo;' : '&larr; ಹಿಂದಿನದು';
-    prevBtn.className = `arrow-btn ${currentPage === 1 ? 'disabled' : ''}`;
-    prevBtn.href = `?page=${currentPage - 1}`;
-    pagination.appendChild(prevBtn);
+  const outputStr = btoa(JSON.stringify(payload));
+  document.getElementById('setup-output').innerHTML = 
+    `<b>Success!</b> Copy this string and paste it into <code>const ENCRYPTED_PAYLOAD = "${outputStr}";</code> in admin.html:<br><br><textarea rows="3" readonly style="width:100%">${outputStr}</textarea>`;
+}
 
-    let visibleIndices = [];
-    const maxButtons = isMobile ? 2 : 8;
+async function decryptAndLogin() {
+  const enteredPass = document.getElementById('admin-pass').value.trim();
+  const msg = document.getElementById('auth-msg');
 
-    if (pages.length <= maxButtons) {
-      visibleIndices = pages.map((_, i) => i);
+  if (!ENCRYPTED_PAYLOAD) {
+    msg.textContent = "Please generate ENCRYPTED_PAYLOAD first using the setup tool below.";
+    return;
+  }
+
+  try {
+    const payload = JSON.parse(atob(ENCRYPTED_PAYLOAD));
+    const salt = new Uint8Array(payload.salt);
+    const iv = new Uint8Array(payload.iv);
+    const data = new Uint8Array(payload.data);
+
+    const key = await getKey(enteredPass, salt);
+    const decrypted = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv },
+      key,
+      data
+    );
+
+    decryptedToken = new TextDecoder().decode(decrypted);
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('dashboard-section').style.display = 'block';
+    document.getElementById('btn-edit-toggle').style.display = 'inline-block';
+    loadPages();
+  } catch (err) {
+    attemptsLeft--;
+    if (attemptsLeft > 0) {
+      msg.textContent = `ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್. ನಿಮಗೆ ಇನ್ನೂ ${attemptsLeft} ಅವಕಾಶಗಳಿವೆ.`;
     } else {
-      const half = Math.floor(maxButtons / 2);
-      let start = (currentPage - 1) - half;
-      let end = start + maxButtons;
-
-      if (start < 0) {
-        start = 0;
-        end = maxButtons;
-      }
-      if (end > pages.length) {
-        end = pages.length;
-        start = end - maxButtons;
-      }
-      for (let i = start; i < end; i++) {
-        visibleIndices.push(i);
-      }
+      document.getElementById('auth-section').innerHTML = '<h3 class="error">sorry- cannot log you in.</h3>';
     }
+  }
+}
 
-    visibleIndices.forEach(idx => {
-      const pageItem = pages[idx];
-      const pageNum = idx + 1;
-      const a = document.createElement('a');
-      a.href = `?page=${pageNum}`;
-      a.className = `page-btn ${pageNum === currentPage ? 'active' : ''}`;
-      a.textContent = pageItem.title || '';
-      pagination.appendChild(a);
+function showEditList() {
+  document.getElementById('create-view').style.display = 'none';
+  document.getElementById('edit-form-view').style.display = 'none';
+  document.getElementById('edit-list-view').style.display = 'block';
+  loadPages();
+}
+
+function showAddForm() {
+  document.getElementById('edit-list-view').style.display = 'none';
+  document.getElementById('edit-form-view').style.display = 'none';
+  document.getElementById('create-view').style.display = 'block';
+}
+
+async function loadPages() {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
+  try {
+    const res = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (res.ok) {
+      const fileInfo = await res.json();
+      const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+      allPages = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+      renderTiles(allPages);
+    }
+  } catch (e) {}
+}
+
+function renderTiles(pages) {
+  const container = document.getElementById('tiles-container');
+  container.innerHTML = '';
+  if (!pages || pages.length === 0) {
+    container.innerHTML = '<p style="text-align:center; width:100%;">ಯಾವುದೇ ಪುಟಗಳಿಲ್ಲ.</p>';
+    return;
+  }
+  pages.forEach(p => {
+    const tile = document.createElement('div');
+    tile.className = 'page-tile';
+    tile.textContent = p.title || `Page ${p.id}`;
+    tile.onclick = () => openEditForm(p.id);
+    container.appendChild(tile);
+  });
+}
+
+function filterTiles() {
+  const query = document.getElementById('search-box').value.toLowerCase().trim();
+  const filtered = allPages.filter(p => (p.title || '').toLowerCase().includes(query));
+  renderTiles(filtered);
+}
+
+function openEditForm(pageId) {
+  const page = allPages.find(p => p.id === pageId);
+  if (!page) return;
+
+  document.getElementById('edit-page-id').value = page.id;
+  document.getElementById('edit-title').value = page.title || '';
+  document.getElementById('edit-short1').value = page.short1 || '';
+  document.getElementById('edit-short2').value = page.short2 || '';
+  document.getElementById('edit-longText').value = page.longText || '';
+  document.getElementById('edit-status').textContent = '';
+
+  document.getElementById('edit-list-view').style.display = 'none';
+  document.getElementById('edit-form-view').style.display = 'block';
+}
+
+function cancelEdit() {
+  document.getElementById('edit-form-view').style.display = 'none';
+  document.getElementById('edit-list-view').style.display = 'block';
+}
+
+async function submitNewPage() {
+  if (!decryptedToken) return location.reload();
+  const title = document.getElementById('page-title').value.trim();
+  const short1 = document.getElementById('short1').value.trim();
+  const short2 = document.getElementById('short2').value.trim();
+  const longText = document.getElementById('longText').value.trim();
+  const status = document.getElementById('create-status');
+
+  if (!title) {
+    status.style.color = "red";
+    status.textContent = "ದಯವಿಟ್ಟು ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ.";
+    return;
+  }
+
+  status.style.color = "#b8860b";
+  status.textContent = "ಉಳಿಸಲಾಗುತ್ತಿದೆ...";
+
+  const autoSlug = title.toLowerCase().replace(/\s+/g, '-');
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
+
+  try {
+    const getRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
     });
 
-    const nextBtn = document.createElement('a');
-    nextBtn.innerHTML = isMobile ? '&raquo;' : 'ಮುಂದಿನದು &rarr;';
-    nextBtn.className = `arrow-btn ${currentPage === pages.length ? 'disabled' : ''}`;
-    nextBtn.href = `?page=${currentPage + 1}`;
-    pagination.appendChild(nextBtn);
-  })
-  .catch(err => {
-    fetch('data.json?t=' + Date.now(), { cache: 'no-store' })
-      .then(r => r.json())
-      .then(() => location.reload())
-      .catch(() => {
-        document.getElementById('content-area').innerHTML = '<p style="text-align:center;">ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</p>';
-      });
-  });
+    let currentData = [];
+    let sha = null;
+    if (getRes.ok) {
+      const fileInfo = await getRes.json();
+      sha = fileInfo.sha;
+      const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+      currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+    }
+
+    const newPage = {
+      id: currentData.length + 1,
+      slug: autoSlug,
+      title: title,
+      short1: short1,
+      short2: short2,
+      longText: longText
+    };
+    currentData.push(newPage);
+
+    const jsonString = JSON.stringify(currentData, null, 2);
+    const utf8Bytes = new TextEncoder().encode(jsonString);
+    let binary = '';
+    utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+    const base64Content = btoa(binary);
+
+    const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Add new page: ${title}`,
+        content: base64Content,
+        sha: sha
+      })
+    });
+
+    if (putRes.ok) {
+      status.style.color = "green";
+      status.textContent = `ಪುಟ #${newPage.id} ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಕಟಿಸಲಾಗಿದೆ!`;
+      document.getElementById('page-title').value = '';
+      document.getElementById('short1').value = '';
+      document.getElementById('short2').value = '';
+      document.getElementById('longText').value = '';
+      allPages = currentData;
+    } else {
+      const errData = await putRes.json();
+      status.style.color = "red";
+      status.textContent = `ದೋಷ: ${errData.message}`;
+    }
+  } catch (err) {
+    status.style.color = "red";
+    status.textContent = `ದೋಷ: ${err.message}`;
+  }
+}
+
+async function savePageEdit() {
+  if (!decryptedToken) return location.reload();
+  const id = parseInt(document.getElementById('edit-page-id').value);
+  const title = document.getElementById('edit-title').value.trim();
+  const short1 = document.getElementById('edit-short1').value.trim();
+  const short2 = document.getElementById('edit-short2').value.trim();
+  const longText = document.getElementById('edit-longText').value.trim();
+  const status = document.getElementById('edit-status');
+
+  if (!title) {
+    status.style.color = "red";
+    status.textContent = "ದಯವಿಟ್ಟು ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ.";
+    return;
+  }
+
+  status.style.color = "#b8860b";
+  status.textContent = "ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ...";
+
+  const autoSlug = title.toLowerCase().replace(/\s+/g, '-');
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?t=${Date.now()}`;
+
+  try {
+    const getRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (!getRes.ok) throw new Error("Failed to fetch latest content");
+
+    const fileInfo = await getRes.json();
+    const sha = fileInfo.sha;
+    const binaryString = atob(fileInfo.content.replace(/\s/g, ''));
+    const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+    let currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+    const index = currentData.findIndex(p => p.id === id);
+    if (index !== -1) {
+      currentData[index].title = title;
+      currentData[index].slug = autoSlug;
+      currentData[index].short1 = short1;
+      currentData[index].short2 = short2;
+      currentData[index].longText = longText;
+    }
+
+    const jsonString = JSON.stringify(currentData, null, 2);
+    const utf8Bytes = new TextEncoder().encode(jsonString);
+    let binary = '';
+    utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+    const base64Content = btoa(binary);
+
+    const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${decryptedToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Update page: ${title}`,
+        content: base64Content,
+        sha: sha
+      })
+    });
+
+    if (putRes.ok) {
+      status.style.color = "green";
+      status.textContent = "ಪುಟ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ!";
+      allPages = currentData;
+      setTimeout(() => {
+        cancelEdit();
+        renderTiles(allPages);
+      }, 1000);
+    } else {
+      const errData = await putRes.json();
+      status.style.color = "red";
+      status.textContent = `ದೋಷ: ${errData.message}`;
+    }
+  } catch (err) {
+    status.style.color = "red";
+    status.textContent = `ದೋಷ: ${err.message}`;
+  }
+}
 </script>
 
 </body>
