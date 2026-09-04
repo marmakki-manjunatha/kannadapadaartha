@@ -37,7 +37,6 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
 h1{text-align:center; font-size:40px; color:#222; margin-bottom:6px;}
 .subtitle{text-align:center; color:#555; margin-bottom:25px;}
 
-/* Card Container */
 .word-card{
   background:white;
   border:2px solid #FFD700;
@@ -55,7 +54,6 @@ h1{text-align:center; font-size:40px; color:#222; margin-bottom:6px;}
   padding-bottom:10px;
 }
 
-/* Two-column layout matching hand-drawn sketch */
 .entry-row{
   display: flex;
   align-items: flex-start;
@@ -91,7 +89,7 @@ h1{text-align:center; font-size:40px; color:#222; margin-bottom:6px;}
   box-sizing: border-box;
 }
 
-/* Pinned Bottom Navigation */
+/* Bottom Navigation */
 .pagination-container{
   position:fixed; 
   bottom:55px; 
@@ -150,7 +148,6 @@ h1{text-align:center; font-size:40px; color:#222; margin-bottom:6px;}
   pointer-events:none;
 }
 
-/* Mobile Responsive */
 @media(max-width: 768px){
   h1{font-size:30px;}
   .word-card h2{font-size:24px;}
@@ -251,7 +248,7 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
       if (s1) {
         html += `
           <div class="entry-row">
-            <div class="entry-label">ಸಾಮಾನ್ಯ ಅರ್ಥ</div>
+            <div class="entry-label">ಆಚಾರ (AAchara)</div>
             <div class="entry-content">${s1}</div>
           </div>
         `;
@@ -260,7 +257,7 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
       if (s2) {
         html += `
           <div class="entry-row">
-            <div class="entry-label">ಭಾಷಾಸಂಗತಿ ೧</div>
+            <div class="entry-label">ವಿಚಾರ (Vichaara)</div>
             <div class="entry-content">${s2}</div>
           </div>
         `;
@@ -279,20 +276,17 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
       contentArea.innerHTML = html;
     }
 
-    // Build pagination
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
     
     const isMobile = window.innerWidth <= 768;
 
-    // Previous Button
     const prevBtn = document.createElement('a');
     prevBtn.innerHTML = isMobile ? '&laquo;' : '&larr; ಹಿಂದಿನದು';
     prevBtn.className = `arrow-btn ${currentPage === 1 ? 'disabled' : ''}`;
     prevBtn.href = `?page=${currentPage - 1}`;
     pagination.appendChild(prevBtn);
 
-    // Visible buttons calculation: 2 for mobile, 8 for desktop
     let visibleIndices = [];
     const maxButtons = isMobile ? 2 : 8;
 
@@ -326,7 +320,6 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
       pagination.appendChild(a);
     });
 
-    // Next Button
     const nextBtn = document.createElement('a');
     nextBtn.innerHTML = isMobile ? '&raquo;' : 'ಮುಂದಿನದು &rarr;';
     nextBtn.className = `arrow-btn ${currentPage === pages.length ? 'disabled' : ''}`;
