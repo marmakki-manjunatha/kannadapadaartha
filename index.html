@@ -17,7 +17,7 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
   display: flex;
   justify-content: flex-end;
   padding: 10px 20px 0;
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
 }
 .admin-btn{
@@ -33,24 +33,65 @@ body{margin:0; background:#fffaf0; font-family: 'Noto Sans Kannada', sans-serif;
 }
 .admin-btn:hover{background:#e6c200;}
 
-.main{padding:10px 20px 160px 20px; max-width:800px; margin:auto;}
-h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
-.subtitle{text-align:center; color:#555; margin-bottom:30px;}
-.word{border:2px solid #FFD700; padding:20px; background:white; margin:20px 0; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.word h2{margin:0 0 15px 0; color:#b8860b; font-size:32px; text-align:center;}
-.word p{font-size:18px; line-height:1.7; color:#333; margin:12px 0; white-space:pre-wrap;}
+.main{padding:10px 20px 160px 20px; max-width:900px; margin:auto;}
+h1{text-align:center; font-size:40px; color:#222; margin-bottom:6px;}
+.subtitle{text-align:center; color:#555; margin-bottom:25px;}
 
-.workshop-heading {
-  text-align: left;
-  font-size: 20px;
-  color: #b8860b;
-  margin-top: 25px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #e0d0b0;
-  padding-bottom: 5px;
+/* Card Container */
+.word-card{
+  background:white;
+  border:2px solid #FFD700;
+  border-radius:12px;
+  padding:24px 20px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* Bottom Navigation Container */
+.word-card h2{
+  text-align:center;
+  color:#b8860b;
+  font-size:32px;
+  margin:0 0 25px 0;
+  border-bottom:2px solid #fff2b2;
+  padding-bottom:10px;
+}
+
+/* Two-column layout matching hand-drawn sketch */
+.entry-row{
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  gap: 15px;
+}
+
+.entry-label{
+  width: 170px;
+  min-width: 170px;
+  padding: 10px 8px;
+  border: 1.5px solid #222;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  color: #111;
+  background: #fffdf5;
+  box-sizing: border-box;
+  line-height: 1.3;
+}
+
+.entry-content{
+  flex: 1;
+  border: 1.5px solid #222;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #222;
+  background: #fff;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+}
+
+/* Pinned Bottom Navigation */
 .pagination-container{
   position:fixed; 
   bottom:55px; 
@@ -109,10 +150,29 @@ h1{text-align:center; font-size:42px; color:#222; margin-bottom:10px;}
   pointer-events:none;
 }
 
-/* Mobile Adjustments */
+/* Mobile Responsive */
 @media(max-width: 768px){
-  h1{font-size:32px;}
-  .word h2{font-size:26px;}
+  h1{font-size:30px;}
+  .word-card h2{font-size:24px;}
+  
+  .entry-row{
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 15px;
+  }
+  .entry-label{
+    width: 100%;
+    min-width: 100%;
+    text-align: left;
+    padding: 6px 10px;
+    font-size: 15px;
+  }
+  .entry-content{
+    width: 100%;
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+
   .pagination{
     gap:6px; 
     padding:0 8px;
@@ -177,25 +237,49 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     let currentPage = parseInt(params.get('page')) || 1;
     if (currentPage < 1 || currentPage > pages.length) currentPage = 1;
 
-    // Display Current Page Content
     const data = pages[currentPage - 1];
     const contentArea = document.getElementById('content-area');
     
     if (data) {
-      const hasLongText = data.longText && data.longText.trim().length > 0;
-      const hasShort1 = data.short1 && data.short1.trim().length > 0;
-      const hasShort2 = data.short2 && data.short2.trim().length > 0;
+      const s1 = data.short1 && data.short1.trim().length > 0 ? data.short1 : null;
+      const s2 = data.short2 && data.short2.trim().length > 0 ? data.short2 : null;
+      const longTxt = data.longText && data.longText.trim().length > 0 ? data.longText : null;
 
-      contentArea.innerHTML = `
-        <div class="word">
-          <h2>${data.title || ''}</h2>
-          ${hasShort1 ? `<p>${data.short1}</p>` : ''}
-          ${hasShort2 ? `<p>${data.short2}</p>` : ''}
-          ${hasLongText ? `<h3 class="workshop-heading">Workshop</h3><p>${data.longText}</p>` : ''}
-        </div>
-      `;
+      let html = `<div class="word-card">`;
+      html += `<h2>${data.title || ''}</h2>`;
+
+      if (s1) {
+        html += `
+          <div class="entry-row">
+            <div class="entry-label">ಸಾಮಾನ್ಯ ಅರ್ಥ</div>
+            <div class="entry-content">${s1}</div>
+          </div>
+        `;
+      }
+
+      if (s2) {
+        html += `
+          <div class="entry-row">
+            <div class="entry-label">ಭಾಷಾಸಂಗತಿ ೧</div>
+            <div class="entry-content">${s2}</div>
+          </div>
+        `;
+      }
+
+      if (longTxt) {
+        html += `
+          <div class="entry-row">
+            <div class="entry-label">WORKSHOP<br><small style="font-size:12px; font-weight:normal;">De-code</small></div>
+            <div class="entry-content">${longTxt}</div>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      contentArea.innerHTML = html;
     }
 
+    // Build pagination
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
     
@@ -208,7 +292,7 @@ fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } })
     prevBtn.href = `?page=${currentPage - 1}`;
     pagination.appendChild(prevBtn);
 
-    // Visible Window Calculation: 2 for mobile, 8 for desktop
+    // Visible buttons calculation: 2 for mobile, 8 for desktop
     let visibleIndices = [];
     const maxButtons = isMobile ? 2 : 8;
 
